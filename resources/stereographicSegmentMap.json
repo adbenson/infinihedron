@@ -1,0 +1,186 @@
+[
+	{
+		"start": "A0",
+		"end": "A2",
+		"channel": "0",
+		"segment": "0"
+	},
+	{
+		"start": "A2",
+		"end": "A4",
+		"channel": 1,
+		"segment": 0
+	},
+	{
+		"start": "A4",
+		"end": "A6",
+		"channel": 2,
+		"segment": 0
+	},
+	{
+		"start": "A6",
+		"end": "A8",
+		"channel": 3,
+		"segment": 0
+	},
+	{
+		"start": "A8",
+		"end": "A0",
+		"channel": 4,
+		"segment": 0
+	},
+
+	{
+		"start": "A0",
+		"end": "B0",
+		"channel": 4,
+		"segment": 1
+	},
+	{
+		"start": "A2",
+		"end": "B2",
+		"channel": 0,
+		"segment": 1
+	},
+	{
+		"start": "A4",
+		"end": "B4",
+		"channel": 1,
+		"segment": 1
+	},
+	{
+		"start": "A6",
+		"end": "B6",
+		"channel": 2,
+		"segment": 1
+	},
+	{
+		"start": "A8",
+		"end": "B8",
+		"channel": 3,
+		"segment": 1
+	},
+
+	{
+		"start": "C1",
+		"end": "B0",
+		"channel": 0,
+		"segment": 3
+	},
+	{
+		"start": "B2",
+		"end": "C1",
+		"channel": 0,
+		"segment": 2
+	},
+	{
+		"start": "C3",
+		"end": "B2",
+		"channel": 1,
+		"segment": 3
+	},
+	{
+		"start": "B4",
+		"end": "C3",
+		"channel": 1,
+		"segment": 2
+	},
+	{
+		"start": "C5",
+		"end": "B4",
+		"channel": 2,
+		"segment": 3
+	},
+	{
+		"start": "B6",
+		"end": "C5",
+		"channel": 2,
+		"segment": 2
+	},
+	{
+		"start": "C7",
+		"end": "B6",
+		"channel": 3,
+		"segment": 3
+	},
+	{
+		"start": "B8",
+		"end": "C7",
+		"channel": 3,
+		"segment": 2
+	},
+	{
+		"start": "C9",
+		"end": "B8",
+		"channel": 4,
+		"segment": 3
+	},
+	{
+		"start": "B0",
+		"end": "C9",
+		"channel": 4,
+		"segment": 2
+	},
+
+	{
+		"start": "C1",
+		"end": "D1",
+		"channel": 5,
+		"segment": 0
+	},
+	{
+		"start": "C3",
+		"end": "D3",
+		"channel": 5,
+		"segment": 2
+	},
+	{
+		"start": "C5",
+		"end": "D5",
+		"channel": 6,
+		"segment": 0
+	},
+	{
+		"start": "C7",
+		"end": "D7",
+		"channel": 6,
+		"segment": 2
+	},
+	{
+		"start": "C9",
+		"end": "D9",
+		"channel": 7,
+		"segment": 0
+	},
+
+	{
+		"start": "D1",
+		"end": "D3",
+		"channel": 5,
+		"segment": 1
+	},
+	{
+		"start": "D3",
+		"end": "D5",
+		"channel": 5,
+		"segment": 3
+	},
+	{
+		"start": "D5",
+		"end": "D7",
+		"channel": 6,
+		"segment": 1
+	},
+	{
+		"start": "D7",
+		"end": "D9",
+		"channel": 6,
+		"segment": 3
+	},
+	{
+		"start": "D9",
+		"end": "D1",
+		"channel": 7,
+		"segment": 1
+	}
+]
