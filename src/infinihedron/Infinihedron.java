@@ -27,8 +27,8 @@ public class Infinihedron extends PApplet {
 
 	// method used only for setting the size of the window
 	public void settings() {
-
-		  fullScreen();
+		// Doesn't actually go "fullscreen", but does remove border and title bar.
+		fullScreen();
 		size(1200, 1200);
 	}
 

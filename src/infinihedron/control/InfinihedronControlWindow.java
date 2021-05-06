@@ -56,7 +56,7 @@ public class InfinihedronControlWindow extends JPanel {
 	private JComboBox<Scenes> sceneList() {
 		List<Scenes> scenes = Arrays.asList(Scenes.values());
 
-		JComboBox<Scenes> combo = new JComboBox<>(scenes);
+		JComboBox<Scenes> combo = new JComboBox<Scenes>(scenes);
 		
 //		combo.setRenderer(new ToStringListCellRenderer(combo.getRenderer(), toString)));
 		
