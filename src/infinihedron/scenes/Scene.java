@@ -12,7 +12,8 @@ public abstract class Scene {
 	
 	Scene(PApplet processing) {
 		this.p = processing;
-		this.beat(60, 0);
+		// Default 60 BPM
+		this.beat(1000, 0);
 	}
 
 	public abstract String getName();

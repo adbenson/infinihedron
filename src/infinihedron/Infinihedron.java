@@ -1,14 +1,20 @@
 package infinihedron;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import infinihedron.control.InfinihedronControlWindow;
+import infinihedron.control.State;
 import infinihedron.models.Pixel;
 import infinihedron.models.Segment;
 import infinihedron.projections.MapReader;
 import infinihedron.projections.StereographicProjection;
+import infinihedron.scenes.Scene;
+import infinihedron.scenes.SceneType;
 import processing.core.PApplet;
 
 public class Infinihedron extends PApplet {
@@ -17,6 +23,8 @@ public class Infinihedron extends PApplet {
 	private static final int pixelsPerChannel = 64;
 
 	private static final int stereographicRadius = 170;
+	
+	private EnumMap<SceneType, Scene> scenes = new EnumMap<>(SceneType.class);
 	
 	private List<Pixel> pixels;
 
@@ -62,5 +70,26 @@ public class Infinihedron extends PApplet {
 		for (Pixel p : pixels) {
 			circle(p.x, p.y, 5);
 		}
+		
+		// Scene scene = getScene(State.sceneA);
+	}
+	
+	private Scene getScene(SceneType scene) {
+		if (!scenes.containsKey(scene)) {
+			scenes.put(scene, instantiateScene(scene));
+		}
+		return scenes.get(scene);
+	}
+	
+	private Scene instantiateScene(SceneType scene) {
+		Constructor<? extends Scene>[] constructors = (Constructor<? extends Scene>[]) scene.clazz.getDeclaredConstructors();
+		try {
+			return constructors[0].newInstance(this);
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

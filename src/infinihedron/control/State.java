@@ -1,10 +1,14 @@
 package infinihedron.control;
 
-import infinihedron.scenes.BlankScene;
-import infinihedron.scenes.Scene;
+import infinihedron.scenes.SceneState;
 
-public class State {
+public interface State {
 
-	public static volatile Class<? extends Scene> sceneA = BlankScene.class;
+	public SceneState getSceneA();
+	public void setSceneA(SceneState sceneA);
+
+	public int getBpm();
+	public void setBpm(int bpm);
 
 }
+
