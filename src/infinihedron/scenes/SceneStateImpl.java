@@ -2,9 +2,9 @@ package infinihedron.scenes;
 
 public class SceneStateImpl implements SceneState {
 	
-	private SceneType type;
+	private SceneType type = SceneType.Blank;
 
-	private int bpm;
+	private int bpm = 120;
 
 	public SceneType getType() {
 		return type;

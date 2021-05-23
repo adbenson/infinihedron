@@ -18,6 +18,7 @@ public class InfinihedronControlWindow extends JPanel {
 	public static final int MAX_BPM = 180;
 
 	private StateManager stateManager = StateManager.getInstance();
+	private State state = stateManager.getCurrent();
 
 	public static void launch() {
 		javax.swing.SwingUtilities.invokeLater(() -> start());
@@ -46,7 +47,7 @@ public class InfinihedronControlWindow extends JPanel {
 		this.add(closeButton());
 		
 		JComboBox<SceneType> scenesA = sceneList();
-		// scenesA.addActionListener(e -> state.change(StateValue.SceneA, (SceneType)scenesA.getSelectedItem()));
+		scenesA.addActionListener(e -> state.getSceneA().setType((SceneType)scenesA.getSelectedItem()));
 		this.add(scenesA);
 
 		JPanel bpmA = bpmSlider();
@@ -77,9 +78,9 @@ public class InfinihedronControlWindow extends JPanel {
 		JLabel label = new JLabel();
 		JPanel panel = new JPanel();
 
-		stateManager.addChangeListener((state, prop) -> label.setText(state.getBpm() + " bpm"));
+		stateManager.addChangeListener((state, prop) -> label.setText(state.getSceneA().getBpm() + " bpm"));
 
-		slider.addChangeListener(e -> stateManager.getCurrent().setBpm(slider.getValue()));
+		slider.addChangeListener(e -> state.getSceneA().setBpm(slider.getValue()));
 
 		panel.add(label);
 		panel.add(slider);

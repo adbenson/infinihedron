@@ -4,13 +4,8 @@ import processing.core.PApplet;
 
 public class BlankScene extends Scene {
 
-	BlankScene(PApplet processing) {
-		super(processing);
-	}
-
-	@Override
-	public String getName() {
-		return "Blank";
+	public BlankScene(PApplet processing) {
+		super(processing, SceneType.Blank);
 	}
 	
 	public void draw(long time) {

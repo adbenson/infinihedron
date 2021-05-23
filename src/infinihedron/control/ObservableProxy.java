@@ -34,7 +34,7 @@ public class ObservableProxy<T> implements InvocationHandler {
 		Object result = method.invoke(original, args);
 		MethodType type = getMethodType(method);
 
-		System.out.println("TYPE: " + method.getName() + ":\t" + type.toString());
+		// System.out.println("TYPE: " + method.getName() + ":\t" + type.toString());
 		if (type == MethodType.Setter) {
 			notifyListeners(method);
 		} else if (type == MethodType.MutableGetter) {
@@ -70,10 +70,13 @@ public class ObservableProxy<T> implements InvocationHandler {
 
 	@SuppressWarnings("unchecked")
 	private <Tx> Tx proxy(Tx value, ObservableProxy<Tx> handler) {
-		Class<?> inter = value.getClass().getInterfaces()[0];
+		Class<?>[] interfaces = value.getClass().getInterfaces();
+		if (interfaces.length < 1) {
+			throw new RuntimeException("Class to be proxied does not have an interface: " + value.getClass());
+		}
 		return (Tx) Proxy.newProxyInstance(
 			ObservableProxy.class.getClassLoader(),
-			new Class[] { inter },
+			new Class[] { interfaces[0] },
 			handler
 		);
 	}
@@ -111,7 +114,7 @@ public class ObservableProxy<T> implements InvocationHandler {
 	}
 
 	private boolean isWrapperType(Class<?> clazz) {
-		return clazz.isPrimitive() || WRAPPER_TYPES.contains(clazz);
+		return clazz.isPrimitive() || clazz.isEnum() || WRAPPER_TYPES.contains(clazz);
 	}
 
 	private static final Set<Class<?>> WRAPPER_TYPES = getWrapperTypes();
@@ -146,7 +149,9 @@ public class ObservableProxy<T> implements InvocationHandler {
 
 		@Override
 		protected void notifyListeners(Method method) {
-			super.notifyListeners(method);
+			for (ChangeListener<T> listener : ObservableProxy.this.listeners) {
+				listener.changed(observed, getPropName(method));
+			}
 		}
 	}
 }

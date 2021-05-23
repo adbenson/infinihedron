@@ -1,6 +1,6 @@
 package infinihedron.control;
 
-class StateManager {
+public class StateManager {
 	private static StateManager instance = null;
 
 	public static StateManager getInstance() {
