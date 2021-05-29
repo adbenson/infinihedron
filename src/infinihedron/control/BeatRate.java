@@ -20,7 +20,7 @@ public class BeatRate {
 
 	private int bpm = DEFAULT_BPM;
 	private int interval = 0;
-	private long nextBeat = 0;
+	// private long nextBeat = 0;
 	private long prevBeat = 0;
 	private int multiplier = DEFAULT_MULTIPLIER;
 	private float intervalReciprocal = 0;
@@ -50,7 +50,7 @@ public class BeatRate {
 	}
 
 	public float getBeatFraction() {
-		return (prevBeat - processing.millis()) * intervalReciprocal;
+		return (processing.millis() - prevBeat) * intervalReciprocal;
 	}
 
 	private void update() {
@@ -58,7 +58,7 @@ public class BeatRate {
 		interval = getMultipliedInterval(baseInterval, multiplier);
 		intervalReciprocal = 1.0f / interval;
 		prevBeat = processing.millis();
-		nextBeat = prevBeat + interval;
+		// nextBeat = prevBeat + interval;
 		startBeatLoop();
 	}
 
@@ -75,7 +75,9 @@ public class BeatRate {
 		this.listeners.add(listener);
 	}
 
-	private synchronized void notifyListeners() {
+	private synchronized void beat() {
+		prevBeat = processing.millis();
+		// nextBeat = prevBeat + interval;
 		for (BeatListener l : listeners) {
 			l.beat(interval);
 		}
@@ -86,7 +88,7 @@ public class BeatRate {
 			beat.stop();
 		}
 
-		beat = new BeatLoop(interval, __ -> notifyListeners());
+		beat = new BeatLoop(interval, __ -> beat());
 	}
 
 }

@@ -49,6 +49,7 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 
 		scenes.put(SceneType.Blank, new BlankScene(this));
 		scenes.put(SceneType.Strobe, new StrobeScene(this));
+		scenes.put(SceneType.Fade, new FadeScene(this));
 
 		stateManager = StateManager.getInstance();
 		// state = stateManager.getCurrent();
@@ -82,6 +83,7 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 		long time = millis();
 
 		scene.draw(time);
+		scene.draw(time, beatA.getBeatFraction());
 
 		translate(600, 600);
 		for (Pixel p : pixels) {

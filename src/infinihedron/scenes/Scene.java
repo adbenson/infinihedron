@@ -20,7 +20,9 @@ public abstract class Scene {
 		this.type = type;
 	}
 	
-	public abstract void draw(long time);
+	public void draw(long time) {};
+
+	public void draw(long time, float beatFraction) {}
 	
 	public void beat(int interval, long time) {
 		this.beatInterval = interval;
