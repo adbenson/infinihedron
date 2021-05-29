@@ -1,3 +1,5 @@
+package OPC;
+
 /*
  * Simple Open Pixel Control client for Processing,
  * designed to sample each LED's color from some point on the canvas.
@@ -27,7 +29,7 @@ public class OPC implements Runnable {
 	String colorCorrection;
 	boolean enableShowLocations;
 
-	OPC(PApplet parent, String host, int port) {
+	public OPC(PApplet parent, String host, int port) {
 		this.p = parent;
 		this.host = host;
 		this.port = port;
@@ -38,7 +40,7 @@ public class OPC implements Runnable {
 	}
 
 	// Set the location of a single LED
-	void led(int index, int x, int y) {
+	public void led(int index, int x, int y) {
 		// For convenience, automatically grow the pixelLocations array. We do want this
 		// to be an array,
 		// instead of a HashMap, to keep draw() as fast as it can be.
@@ -54,7 +56,7 @@ public class OPC implements Runnable {
 	// Set the location of several LEDs arranged in a strip.
 	// Angle is in radians, measured clockwise from +X.
 	// (x,y) is the center of the strip.
-	void ledStrip(int index, int count, float x, float y, float spacing, float angle, boolean reversed) {
+	public void ledStrip(int index, int count, float x, float y, float spacing, float angle, boolean reversed) {
 		float s = PApplet.sin(angle);
 		float c = PApplet.cos(angle);
 		for (int i = 0; i < count; i++) {
@@ -67,7 +69,7 @@ public class OPC implements Runnable {
 	// Set the locations of a ring of LEDs. The center of the ring is at (x, y),
 	// with "radius" pixels between the center and each LED. The first LED is at
 	// the indicated angle, in radians, measured clockwise from +X.
-	void ledRing(int index, int count, float x, float y, float radius, float angle) {
+	public void ledRing(int index, int count, float x, float y, float radius, float angle) {
 		for (int i = 0; i < count; i++) {
 			float a = angle + i * 2 * PApplet.PI / count;
 			led(index + i, (int) (x - radius * PApplet.cos(a) + 0.5), (int) (y - radius * PApplet.sin(a) + 0.5));
@@ -77,7 +79,7 @@ public class OPC implements Runnable {
 	// Set the location of several LEDs arranged in a grid. The first strip is
 	// at 'angle', measured in radians clockwise from +X.
 	// (x,y) is the center of the grid.
-	void ledGrid(int index, int stripLength, int numStrips, float x, float y, float ledSpacing, float stripSpacing,
+	public void ledGrid(int index, int stripLength, int numStrips, float x, float y, float ledSpacing, float stripSpacing,
 			float angle, boolean zigzag, boolean flip) {
 		float s = PApplet.sin(angle + PApplet.HALF_PI);
 		float c = PApplet.cos(angle + PApplet.HALF_PI);
@@ -90,7 +92,7 @@ public class OPC implements Runnable {
 
 	// Set the location of 64 LEDs arranged in a uniform 8x8 grid.
 	// (x,y) is the center of the grid.
-	void ledGrid8x8(int index, float x, float y, float spacing, float angle, boolean zigzag, boolean flip) {
+	public void ledGrid8x8(int index, float x, float y, float spacing, float angle, boolean zigzag, boolean flip) {
 		ledGrid(index, 8, 8, x, y, spacing, spacing, angle, zigzag, flip);
 	}
 
@@ -100,7 +102,7 @@ public class OPC implements Runnable {
 	// is interfering with your processing sketch, or if you'd simply like the
 	// screen to be
 	// less cluttered.
-	void showLocations(boolean enabled) {
+	public void showLocations(boolean enabled) {
 		enableShowLocations = enabled;
 	}
 
@@ -109,7 +111,7 @@ public class OPC implements Runnable {
 	// resolution by quickly jittering between adjacent 8-bit brightness levels
 	// about 400 times a second.
 	// Dithering is on by default.
-	void setDithering(boolean enabled) {
+	public void setDithering(boolean enabled) {
 		if (enabled)
 			firmwareConfig &= ~0x01;
 		else
@@ -122,7 +124,7 @@ public class OPC implements Runnable {
 	// in hardware, and it does so with 16-bit per channel resolution. Combined with
 	// dithering, this helps make
 	// fades very smooth. Interpolation is on by default.
-	void setInterpolation(boolean enabled) {
+	public void setInterpolation(boolean enabled) {
 		if (enabled)
 			firmwareConfig &= ~0x02;
 		else
@@ -133,14 +135,14 @@ public class OPC implements Runnable {
 	// Put the Fadecandy onboard LED under automatic control. It blinks any time the
 	// firmware processes a packet.
 	// This is the default configuration for the LED.
-	void statusLedAuto() {
+	public void statusLedAuto() {
 		firmwareConfig &= 0x0C;
 		sendFirmwareConfigPacket();
 	}
 
 	// Manually turn the Fadecandy onboard LED on or off. This disables automatic
 	// LED control.
-	void setStatusLed(boolean on) {
+	public void setStatusLed(boolean on) {
 		firmwareConfig |= 0x04; // Manual LED control
 		if (on)
 			firmwareConfig |= 0x08;
@@ -150,19 +152,19 @@ public class OPC implements Runnable {
 	}
 
 	// Set the color correction parameters
-	void setColorCorrection(float gamma, float red, float green, float blue) {
+	public void setColorCorrection(float gamma, float red, float green, float blue) {
 		colorCorrection = "{ \"gamma\": " + gamma + ", \"whitepoint\": [" + red + "," + green + "," + blue + "]}";
 		sendColorCorrectionPacket();
 	}
 
 	// Set custom color correction parameters from a string
-	void setColorCorrection(String s) {
+	public void setColorCorrection(String s) {
 		colorCorrection = s;
 		sendColorCorrectionPacket();
 	}
 
 	// Send a packet with the current firmware configuration settings
-	void sendFirmwareConfigPacket() {
+	public void sendFirmwareConfigPacket() {
 		if (pending == null) {
 			// We'll do this when we reconnect
 			return;
@@ -187,7 +189,7 @@ public class OPC implements Runnable {
 	}
 
 	// Send a packet with the current color correction settings
-	void sendColorCorrectionPacket() {
+	public void sendColorCorrectionPacket() {
 		if (colorCorrection == null) {
 			// No color correction defined
 			return;
@@ -222,7 +224,7 @@ public class OPC implements Runnable {
 	// If you aren't using that mapping, this function has no effect.
 	// In that case, you can call setPixelCount(), setPixel(), and writePixels()
 	// separately.
-	void draw() {
+	public void draw() {
 		if (pixelLocations == null) {
 			// No pixels defined yet
 			return;
@@ -261,7 +263,7 @@ public class OPC implements Runnable {
 	// Change the number of pixels in our output packet.
 	// This is normally not needed; the output packet is automatically sized
 	// by draw() and by setPixel().
-	void setPixelCount(int numPixels) {
+	public void setPixelCount(int numPixels) {
 		int numBytes = 3 * numPixels;
 		int packetLen = 4 + numBytes;
 		if (packetData == null || packetData.length != packetLen) {
@@ -276,7 +278,7 @@ public class OPC implements Runnable {
 
 	// Directly manipulate a pixel in the output buffer. This isn't needed
 	// for pixels that are mapped to the screen.
-	void setPixel(int number, int c) {
+	public void setPixel(int number, int c) {
 		int offset = 4 + number * 3;
 		if (packetData == null || packetData.length < offset + 3) {
 			setPixelCount(number + 1);
@@ -289,7 +291,7 @@ public class OPC implements Runnable {
 
 	// Read a pixel from the output buffer. If the pixel was mapped to the display,
 	// this returns the value we captured on the previous frame.
-	int getPixel(int number) {
+	public int getPixel(int number) {
 		int offset = 4 + number * 3;
 		if (packetData == null || packetData.length < offset + 3) {
 			return 0;
@@ -302,7 +304,7 @@ public class OPC implements Runnable {
 	// automatically in draw() if any pixels are mapped to the screen, but if you
 	// haven't
 	// mapped any pixels to the screen you'll want to call this directly.
-	void writePixels() {
+	public void writePixels() {
 		if (packetData == null || packetData.length == 0) {
 			// No pixel buffer
 			return;
@@ -318,7 +320,7 @@ public class OPC implements Runnable {
 		}
 	}
 
-	void dispose() {
+	public void dispose() {
 		// Destroy the socket. Called internally when we've disconnected.
 		// (Thread continues to run)
 		if (output != null) {
