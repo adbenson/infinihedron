@@ -12,7 +12,6 @@ public class StrobeScene extends Scene {
 
 	@Override
 	public void draw(long time) {
-		System.out.println(this.state);
 		p.fill(this.state ? 0 : 255);
 		p.rect(0, 0, p.height, p.width);
 	}

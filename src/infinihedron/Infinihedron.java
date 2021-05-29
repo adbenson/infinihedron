@@ -28,8 +28,7 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 
 	private StateManager stateManager;
 
-	private long nextBeat = 0;
-	private int beatInterval = 1000;
+	private BeatRate beatA = new BeatRate(this);
 
 	public static void main(String[] args) {
 		// The argument passed to main must match the class name
@@ -74,16 +73,13 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 		InfinihedronControlWindow.launch();
 
 		stateManager.addChangeListener(this);
+
+		beatA.listen(interval -> this.scene.beat(interval, millis()));
 	}
 
 	// identical use to draw in Prcessing IDE
 	public void draw() {
 		long time = millis();
-
-		if (time > nextBeat) {
-			nextBeat = time + beatInterval;
-			scene.beat(beatInterval, time);
-		}
 
 		scene.draw(time);
 
@@ -102,9 +98,14 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 			scene = scenes.get(type);
 		}
 
-		if (propertyName.equals("sceneA.bpm")) {
-			int bpm = state.getSceneA().getBpm();
-			beatInterval = (int)((60.0 / bpm) * 1000);
+		if (propertyName.equals("bpm")) {
+			int bpm = state.getBpm();
+			beatA.updateBpm(bpm);
+		}
+
+		if (propertyName.equals("sceneA.multiplier")) {
+			int multiplier = state.getSceneA().getMultiplier();
+			beatA.updateMultiplier(multiplier);
 		}
 	}
 }

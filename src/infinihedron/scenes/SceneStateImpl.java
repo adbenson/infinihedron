@@ -1,10 +1,11 @@
 package infinihedron.scenes;
 
+import infinihedron.control.BeatRate;
+
 public class SceneStateImpl implements SceneState {
 	
 	private SceneType type = SceneType.Blank;
-
-	private int bpm = 120;
+	private int multiplier = BeatRate.DEFAULT_MULTIPLIER;
 
 	public SceneType getType() {
 		return type;
@@ -14,11 +15,11 @@ public class SceneStateImpl implements SceneState {
 		this.type = type;
 	}
 
-	public int getBpm() {
-		return bpm;
+	public int getMultiplier() {
+		return multiplier;
 	}
 
-	public void setBpm(int bpm) {
-		this.bpm = bpm;
+	public void setMultiplier(int multiplier) {
+		this.multiplier = multiplier;
 	}
 }
