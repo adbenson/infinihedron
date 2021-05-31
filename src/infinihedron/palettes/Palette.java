@@ -1,28 +1,96 @@
 package infinihedron.palettes;
 
+import java.util.Random;
+
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Random;
+import java.awt.image.BufferedImage;
+import java.awt.Paint;
+import java.awt.GradientPaint;
 
 import javax.swing.JComponent;
 
 public abstract class Palette extends JComponent {
 	
-	public static final int WIDTH = 280;
-	public static final int HEIGHT = 80;
+	public static final int WIDTH = 255;
+	public static final int HEIGHT = 63;
+
+	public static Random r = new Random();
+
+	protected final int modulo;
+	protected final int segment;
+
+	protected BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+
+	protected static final Color purple = new Color(102, 0, 153);
+	protected static final Color teal = new Color(0, 187, 197);
+
+	public Palette(int modulo) {
+		this.modulo = modulo;
+		this.segment = WIDTH / modulo;
+		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		this.draw2();
+	}
 	
-    @Override
-    public void paint(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
-    }
+	@Override
+	public void paint(Graphics g) {
+		g.drawImage(image, 0, 0, null);
+	}
 	
 	public Color getColor() {
 		return getColor(new Random().nextFloat());
 	}
 	
-	public abstract Color getColor(float value);
+	public Color getColor(float value) {
+		return getColorAt((int)(WIDTH * value));
+	};
+
+	public Color getColor(int value) {
+		int i = value % this.modulo;
+		return getColor(segment * (i + 1));
+	};
+
+	public Color getColorAt(int x) {
+		return new Color(image.getRGB(x, 1));
+	}
+
+	public Color getRandomColor() {
+		return this.getColor(r.nextInt(modulo));
+	};
 	
-	public abstract Color draw(Graphics2D g);
+	public abstract void draw(Graphics2D g);
+
+	protected void paintRect(Graphics2D g, Paint paint, int start, int end) {
+		g.setPaint(paint);
+		g.fillRect(start, 0, end, HEIGHT);
+	}
+
+	private void draw2() {
+		Graphics2D g2d = (Graphics2D) image.getGraphics();
+		draw(g2d);
+	}
+
+	protected void paintGradients(Graphics2D g, Color[] colors) {
+		int width = WIDTH / (colors.length - 1);
+
+		for (int i = 0; i < (colors.length - 1); i++) {
+			Color c1 = colors[i];
+			Color c2 = colors[i + 1];
+			paintGradient(g, c1, c2, i * width, width);
+		}
+	}
+
+	protected void paintGradient(Graphics2D g, Color start, Color end, int x, int width) {
+		GradientPaint gradient = new GradientPaint(x, 0, start, x + width, 0, end);
+		g.setPaint(gradient);
+		g.fillRect(x, 0, width, HEIGHT);
+	}
+
+	protected void paintBlock(Graphics2D g, Color color, int x, int width) {
+		g.setPaint(color);
+		g.fillRect(x, 0, width, HEIGHT);
+	}
 
 }

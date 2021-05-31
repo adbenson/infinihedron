@@ -1,5 +1,6 @@
 package infinihedron.control;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Hashtable;
 
@@ -8,16 +9,24 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import infinihedron.palettes.Palette;
+import infinihedron.palettes.PaletteManager;
+import infinihedron.palettes.PaletteType;
+import infinihedron.palettes.RainbowPalette;
 import infinihedron.scenes.SceneType;
 
 public class InfinihedronControlWindow extends JPanel {
 
 	private StateManager stateManager = StateManager.getInstance();
 	private State state = stateManager.getCurrent();
+
+	private PaletteManager palettes = PaletteManager.getInstance();
 
 	public static void launch() {
 		javax.swing.SwingUtilities.invokeLater(() -> start());
@@ -45,16 +54,16 @@ public class InfinihedronControlWindow extends JPanel {
 	
 	private void populate() {
 		this.add(closeButton());
-		
-		JComboBox<SceneType> scenesA = sceneList();
-		scenesA.addActionListener(e -> state.getSceneA().setType((SceneType)scenesA.getSelectedItem()));
-		this.add(scenesA);
 
-		JPanel bpmA = bpmSlider();
-		this.add(bpmA);
+		this.add(opcConnection());
 
-		JPanel multi = multiplier();
-		this.add(multi);
+		this.add(sceneList());
+
+		this.add(bpmSlider());
+
+		this.add(multiplier());
+
+		this.add(palettes());
 	}
 	
 	private JButton closeButton() {
@@ -63,12 +72,13 @@ public class InfinihedronControlWindow extends JPanel {
 		return close;
 	}
 
-	private JComboBox<SceneType> sceneList() {
+	private JPanel sceneList() {
+		JPanel panel = new JPanel();
 		JComboBox<SceneType> combo = new JComboBox<>(SceneType.values());
+		combo.addActionListener(e -> state.getSceneA().setType((SceneType)combo.getSelectedItem()));
 		
-//		combo.setRenderer(new ToStringListCellRenderer(combo.getRenderer(), toString)));
-		
-		return combo;
+		panel.add(combo);
+		return panel;
 	}
 	
 	private JPanel bpmSlider() {
@@ -90,9 +100,6 @@ public class InfinihedronControlWindow extends JPanel {
 
 		return panel;
 	}
-
-	//[-4, -2, 1, 2, 4].length = 5
-	//[ 0,  1, 2, 3, 4]
 
 	private JPanel multiplier() {
 		JSlider slider = new JSlider(0, BeatRate.MULTIPLIER_FACTORS.length - 1, BeatRate.DEFAULT_MULTIPLIER);
@@ -132,12 +139,42 @@ public class InfinihedronControlWindow extends JPanel {
 		}
 	}
 
-	private JPanel labeledComponent(JComponent component, String text) {
-		JLabel label = new JLabel(text);
+	private JPanel opcConnection() {
 		JPanel panel = new JPanel();
+
+		JComboBox<String> combo = new JComboBox<>(new String[] {"localhost", "infinihedron"});
+		combo.addActionListener(e -> state.setOpcHostName((String)combo.getSelectedItem()));
+		panel.add(combo);
+
+		JLabel label = new JLabel("Not Connected");
+		stateManager.addChangeListener((state, prop) -> {
+			label.setText((state.getIsOpcConnected() ? "" : "Not") + "Connected");
+		});
 		panel.add(label);
-		panel.add(component);
+
 		return panel;
+	}
+
+	private JPanel palettes() {
+		JPanel panel = new JPanel();
+
+		JComboBox<PaletteType> combo = new JComboBox<>(PaletteType.values());
+
+		PaletteRenderer renderer = new PaletteRenderer();
+		combo.setRenderer(renderer);
+
+		panel.add(combo);
+
+		return panel;
+	}
+
+	class PaletteRenderer implements ListCellRenderer<PaletteType> {
+		@Override
+		public Component getListCellRendererComponent(JList<? extends PaletteType> list, PaletteType value, int index,
+				boolean isSelected, boolean cellHasFocus) {
+			return palettes.get(value);
+
+		}
 	}
 }
 

@@ -10,7 +10,7 @@ public class StateManager {
 		return instance;
 	}
 
-	StateManager() {
+	private StateManager() {
 		observableState = new ObservableProxy<State>(new StateImpl());
 	}
 

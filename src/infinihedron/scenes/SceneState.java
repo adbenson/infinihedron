@@ -1,5 +1,7 @@
 package infinihedron.scenes;
 
+import infinihedron.palettes.PaletteType;
+
 public interface SceneState{
 
 	public SceneType getType();
@@ -7,5 +9,8 @@ public interface SceneState{
 
 	public int getMultiplier();
 	public void setMultiplier(int multiplier);
+
+	public PaletteType getPalette();
+	public void setPalette(PaletteType palette);
 
 }

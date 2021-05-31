@@ -114,7 +114,7 @@ public class ObservableProxy<T> implements InvocationHandler {
 	}
 
 	private boolean isWrapperType(Class<?> clazz) {
-		return clazz.isPrimitive() || clazz.isEnum() || WRAPPER_TYPES.contains(clazz);
+		return clazz.isPrimitive() || clazz == String.class || clazz.isEnum() || WRAPPER_TYPES.contains(clazz);
 	}
 
 	private static final Set<Class<?>> WRAPPER_TYPES = getWrapperTypes();
