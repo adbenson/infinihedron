@@ -30,7 +30,7 @@ public class ObservableProxy<T> implements InvocationHandler {
 	}
 
 	@Override
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		Object result = method.invoke(original, args);
 		MethodType type = getMethodType(method);
 

@@ -6,7 +6,7 @@ import java.awt.GradientPaint;
 
 public class RainbowPalette extends Palette {
 
-	private final static int modulo = 6;
+	private final static int modulo = 255;
 
 	public RainbowPalette() {
 		super(modulo);

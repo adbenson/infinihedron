@@ -163,6 +163,8 @@ public class InfinihedronControlWindow extends JPanel {
 		PaletteRenderer renderer = new PaletteRenderer();
 		combo.setRenderer(renderer);
 
+		combo.addActionListener(e -> state.getSceneA().setPalette((PaletteType)combo.getSelectedItem()));
+
 		panel.add(combo);
 
 		return panel;

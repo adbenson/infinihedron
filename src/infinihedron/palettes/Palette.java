@@ -14,8 +14,8 @@ import javax.swing.JComponent;
 
 public abstract class Palette extends JComponent {
 	
-	public static final int WIDTH = 255;
-	public static final int HEIGHT = 63;
+	public static final int WIDTH = 256;
+	public static final int HEIGHT = 64;
 
 	public static Random r = new Random();
 
@@ -49,11 +49,16 @@ public abstract class Palette extends JComponent {
 
 	public Color getColor(int value) {
 		int i = value % this.modulo;
-		return getColor(segment * (i + 1));
+		return getColorAt(segment * (i + 1));
 	};
 
 	public Color getColorAt(int x) {
-		return new Color(image.getRGB(x, 1));
+		try {
+			return new Color(image.getRGB(x, 1));
+		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+			System.out.println("Color OOB: " + x);
+			return Color.black;
+		}
 	}
 
 	public Color getRandomColor() {
@@ -78,7 +83,12 @@ public abstract class Palette extends JComponent {
 		for (int i = 0; i < (colors.length - 1); i++) {
 			Color c1 = colors[i];
 			Color c2 = colors[i + 1];
-			paintGradient(g, c1, c2, i * width, width);
+			int x = i * width;
+			// Correct for rounding errors by filling out the remaining pixels with the last color
+			if (i == colors.length - 2) {
+				width = WIDTH - x;
+			}
+			paintGradient(g, c1, c2, x, width);
 		}
 	}
 

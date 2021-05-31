@@ -10,6 +10,7 @@ import OPC.OPC;
 
 import infinihedron.control.*;
 import infinihedron.models.*;
+import infinihedron.palettes.PaletteManager;
 import infinihedron.projections.*;
 import infinihedron.scenes.*;
 
@@ -40,6 +41,8 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 
 	private Point mid;
 
+	private PaletteManager palettes = PaletteManager.getInstance();
+
 	public static void main(String[] args) {
 
 		// The argument passed to main must match the class name
@@ -66,9 +69,8 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 		stateManager = StateManager.getInstance();
 		state = stateManager.getCurrent();
 
-		scene = scenes.get(stateManager.getCurrent().getSceneA().getType());
-
 		scene = scenes.get(state.getSceneA().getType());
+		scene.setPalette(palettes.get(state.getSceneA().getPalette()));
 
 		List<Segment> segments = loadSegments("stereographicSegmentMap.json");
 		pixels = getPixels(segments);
@@ -112,8 +114,8 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 		System.out.println("State change: " + propertyName);
 		if (propertyName.equals("sceneA") || propertyName.equals("sceneA.type")) {
 			SceneType type = state.getSceneA().getType();
-			System.out.println("Scene changed: " + type);
 			scene = scenes.get(type);
+			scene.setPalette(palettes.get(state.getSceneA().getPalette()));
 		}
 
 		if (propertyName.equals("bpm")) {
@@ -129,6 +131,10 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 		if (propertyName.equals("opcHostName")) {
 			opc.dispose();
 			opc = new OPC(this, state.getOpcHostName(), 7890);
+		}
+
+		if (propertyName.equals("sceneA.palette")) {
+			scene.setPalette(palettes.get(state.getSceneA().getPalette()));
 		}
 	}
 
@@ -149,6 +155,5 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-
 	}
 }
