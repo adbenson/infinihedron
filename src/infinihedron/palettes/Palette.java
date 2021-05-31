@@ -44,7 +44,7 @@ public abstract class Palette extends JComponent {
 	}
 	
 	public Color getColor(float value) {
-		return getColorAt((int)(WIDTH * value));
+		return getColorAt((int)((WIDTH - 1) * value));
 	};
 
 	public Color getColor(int value) {

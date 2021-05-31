@@ -54,7 +54,7 @@ public class BeatRate {
 	}
 
 	private void update() {
-		int baseInterval = (int)((60.0 / bpm) * 1000);
+		int baseInterval = 60000 / bpm;
 		interval = getMultipliedInterval(baseInterval, multiplier);
 		intervalReciprocal = 1.0f / interval;
 		prevBeat = processing.millis();

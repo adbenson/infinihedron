@@ -1,5 +1,6 @@
 package infinihedron.control;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Hashtable;
@@ -19,6 +20,7 @@ import infinihedron.palettes.Palette;
 import infinihedron.palettes.PaletteManager;
 import infinihedron.palettes.PaletteType;
 import infinihedron.palettes.RainbowPalette;
+import infinihedron.palettes.TapToBeat;
 import infinihedron.scenes.SceneType;
 
 public class InfinihedronControlWindow extends JPanel {
@@ -27,6 +29,8 @@ public class InfinihedronControlWindow extends JPanel {
 	private State state = stateManager.getCurrent();
 
 	private PaletteManager palettes = PaletteManager.getInstance();
+
+	private BeatListener beatListener;
 
 	public static void launch() {
 		javax.swing.SwingUtilities.invokeLater(() -> start());
@@ -61,6 +65,8 @@ public class InfinihedronControlWindow extends JPanel {
 
 		this.add(bpmSlider());
 
+		this.add(tapToBeat());
+
 		this.add(multiplier());
 
 		this.add(palettes());
@@ -68,6 +74,7 @@ public class InfinihedronControlWindow extends JPanel {
 	
 	private JButton closeButton() {
 		JButton close = new JButton("X");
+		close.setPreferredSize(new Dimension(50, 50));
 		close.addActionListener(e -> System.exit(0));
 		return close;
 	}
@@ -82,21 +89,35 @@ public class InfinihedronControlWindow extends JPanel {
 	}
 	
 	private JPanel bpmSlider() {
+		JPanel panel = new JPanel(new BorderLayout(5, 5));
+
+		JButton decrease = new JButton("-");
+		decrease.setPreferredSize(new Dimension(50, 50));
+		decrease.addActionListener(e -> state.setBpm(state.getBpm() - 1));
+		panel.add(decrease, BorderLayout.WEST);
+
+		JLabel label = new JLabel(BeatRate.DEFAULT_BPM + " bpm", SwingConstants.CENTER);
+		panel.add(label, BorderLayout.NORTH);
+
 		JSlider slider = new JSlider(BeatRate.MIN_BPM, BeatRate.MAX_BPM, BeatRate.DEFAULT_BPM);
 		slider.setMajorTickSpacing(20);
 		slider.setMinorTickSpacing(10);
 		slider.setPaintTicks(true);
 		slider.setPaintLabels(true);
+		panel.add(slider, BorderLayout.CENTER);
 
-		JLabel label = new JLabel();
-		JPanel panel = new JPanel();
-
-		stateManager.addChangeListener((state, prop) -> label.setText(state.getBpm() + " bpm"));
+		JButton increase = new JButton("+");
+		increase.setPreferredSize(new Dimension(50, 50));
+		increase.addActionListener(e -> state.setBpm(state.getBpm() + 1));
+		panel.add(increase, BorderLayout.EAST);
+	
+		stateManager.addChangeListener((state, prop) -> {
+			int bpm = state.getBpm();
+			label.setText(bpm + " bpm");
+			slider.setValue(bpm);
+		});
 
 		slider.addChangeListener(e -> state.setBpm(slider.getValue()));
-
-		panel.add(label);
-		panel.add(slider);
 
 		return panel;
 	}
@@ -166,6 +187,21 @@ public class InfinihedronControlWindow extends JPanel {
 		combo.addActionListener(e -> state.getSceneA().setPalette((PaletteType)combo.getSelectedItem()));
 
 		panel.add(combo);
+
+		return panel;
+	}
+
+	private JPanel tapToBeat() {
+		JPanel panel = new JPanel();
+
+		JButton button = new JButton("Tap");
+		button.setPreferredSize(new Dimension(200, 200));
+
+		TapToBeat ttb = new TapToBeat(i -> state.setBpm(60000 / i));
+
+		button.addActionListener(e -> ttb.tapped(System.currentTimeMillis()));
+
+		panel.add(button);
 
 		return panel;
 	}

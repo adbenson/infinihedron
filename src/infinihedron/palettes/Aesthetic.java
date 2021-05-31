@@ -6,7 +6,7 @@ import java.awt.Color;
 public class Aesthetic extends Palette {
 
 	public Aesthetic() {
-		super(3);
+		super(255);
 	}
 
 	@Override
