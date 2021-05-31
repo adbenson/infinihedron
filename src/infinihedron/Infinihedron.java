@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import OPC.OPC;
+
 import infinihedron.control.*;
 import infinihedron.models.*;
 import infinihedron.projections.*;
@@ -14,11 +16,16 @@ import infinihedron.scenes.*;
 import processing.core.PApplet;
 
 public class Infinihedron extends PApplet implements ChangeListener<State> {
+
+	public static final String DEFAULT_HOST = "localhost";
+
 	private static final int pixelsPerEdge = 12;
 	private static final int horizontalDivisions = 10;
 	private static final int pixelsPerChannel = 64;
 
 	private static final int stereographicRadius = 170;
+
+	private OPC opc;
 	
 	private Map<SceneType, Scene> scenes = new EnumMap<>(SceneType.class);
 
@@ -27,10 +34,14 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 	private List<Pixel> pixels;
 
 	private StateManager stateManager;
+	private State state;
 
 	private BeatRate beatA = new BeatRate(this);
 
+	private Point mid;
+
 	public static void main(String[] args) {
+
 		// The argument passed to main must match the class name
 		PApplet.main("infinihedron.Infinihedron");
 	}
@@ -40,6 +51,7 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 		// Doesn't actually go "fullscreen", but does remove border and title bar.
 		fullScreen();
 		size(1200, 1200);
+		mid = new Point(600, 600);
 	}
 
 	// identical use to setup in Processing IDE except for size()
@@ -52,23 +64,22 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 		scenes.put(SceneType.Fade, new FadeScene(this));
 
 		stateManager = StateManager.getInstance();
-		// state = stateManager.getCurrent();
+		state = stateManager.getCurrent();
+
 		scene = scenes.get(stateManager.getCurrent().getSceneA().getType());
 
-		try {
-			List<Segment> segments = MapReader.get("stereographicSegmentMap.json").stream().collect(Collectors.toList());
-			
-			pixels = StereographicProjection.generatePixels(
-				segments,
-				stereographicRadius,
-				horizontalDivisions,
-				pixelsPerEdge,
-				pixelsPerChannel
-			);
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		scene = scenes.get(state.getSceneA().getType());
+
+		List<Segment> segments = loadSegments("stereographicSegmentMap.json");
+		pixels = getPixels(segments);
+
+		opc = new OPC(this, state.getOpcHostName(), 7890);
+
+		opc.setPixelCount(512);
+		for (Pixel p : pixels) {
+			Point real = p.add(mid);
+			//System.out.println(p.index + "\t" + real.x + "\t" + real.y);
+			opc.led(p.index, (int)real.x, (int)real.y);
 		}
 		
 		InfinihedronControlWindow.launch();
@@ -80,12 +91,17 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 
 	// identical use to draw in Prcessing IDE
 	public void draw() {
+		boolean connected = opc.isConnected();
+		if (connected != state.getIsOpcConnected()) {
+			state.setIsOpcConnected(connected);
+		}
+
 		long time = millis();
 
 		scene.draw(time);
 		scene.draw(time, beatA.getBeatFraction());
 
-		translate(600, 600);
+		translate(mid.x, mid.y);
 		for (Pixel p : pixels) {
 			circle(p.x, p.y, 5);
 		}
@@ -109,5 +125,30 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 			int multiplier = state.getSceneA().getMultiplier();
 			beatA.updateMultiplier(multiplier);
 		}
+
+		if (propertyName.equals("opcHostName")) {
+			opc.dispose();
+			opc = new OPC(this, state.getOpcHostName(), 7890);
+		}
+	}
+
+	private List<Pixel> getPixels(List<Segment> segments) {
+		return StereographicProjection.generatePixels(
+			segments,
+			stereographicRadius,
+			horizontalDivisions,
+			pixelsPerEdge,
+			pixelsPerChannel
+		);
+	}
+
+	private List<Segment> loadSegments(String file) {
+		try {
+			return MapReader.get(file).stream().collect(Collectors.toList());			
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+
 	}
 }

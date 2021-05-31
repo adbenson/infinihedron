@@ -39,6 +39,10 @@ public class OPC implements Runnable {
 		parent.registerMethod("draw", this);
 	}
 
+	public boolean isConnected() {
+		return output != null;
+	}
+
 	// Set the location of a single LED
 	public void led(int index, int x, int y) {
 		// For convenience, automatically grow the pixelLocations array. We do want this
@@ -331,13 +335,15 @@ public class OPC implements Runnable {
 	}
 
 	public void run() {
+		System.out.println("OPC thread begin");
 		// Thread tests server connection periodically, attempts reconnection.
 		// Important for OPC arrays; faster startup, client continues
 		// to run smoothly when mobile servers go in and out of range.
-		for (;;) {
+		while(true) {
 
 			if (output == null) { // No OPC connection?
 				try { // Make one!
+					System.out.println("host: " + host + ":" + port);
 					socket = new Socket(host, port);
 					socket.setTcpNoDelay(true);
 					pending = socket.getOutputStream(); // Avoid race condition...
