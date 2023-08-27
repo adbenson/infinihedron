@@ -8,7 +8,7 @@ import processing.core.PApplet;
 public class BeatRate {
 
 	public static final int MIN_BPM = 60;
-	public static final int MAX_BPM = 180;
+	public static final int MAX_BPM = 220;
 	public static final int DEFAULT_BPM = 120;
 
 	public static final int[] MULTIPLIER_FACTORS = new int[] {

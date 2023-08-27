@@ -24,7 +24,7 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 	private static final int horizontalDivisions = 10;
 	private static final int pixelsPerChannel = 64;
 
-	private static final int stereographicRadius = 170;
+	private static final int stereographicRadius = 100;
 
 	private OPC opc;
 	
@@ -53,14 +53,14 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 	public void settings() {
 		// Doesn't actually go "fullscreen", but does remove border and title bar.
 		fullScreen();
-		size(1200, 1200);
-		mid = new Point(600, 600);
+		size(800, 800);
+		mid = new Point(400, 400);
 	}
 
 	// identical use to setup in Processing IDE except for size()
 	public void setup() {
-		surface.setLocation(600, 0);
-		surface.setSize(1200, 1200);
+		surface.setLocation(400, 0);
+		surface.setSize(800, 800);
 
 		scenes.put(SceneType.Blank, new BlankScene(this));
 		scenes.put(SceneType.Strobe, new StrobeScene(this));

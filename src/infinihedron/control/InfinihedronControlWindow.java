@@ -39,7 +39,7 @@ public class InfinihedronControlWindow extends JPanel {
 	private static void start() {
 		JFrame frame = new JFrame("Infinihedron");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(600, 1200));
+		frame.setPreferredSize(new Dimension(400, 800));
 		frame.setUndecorated(true);
 
 		JPanel content = new InfinihedronControlWindow();
@@ -104,6 +104,7 @@ public class InfinihedronControlWindow extends JPanel {
 		slider.setMinorTickSpacing(10);
 		slider.setPaintTicks(true);
 		slider.setPaintLabels(true);
+		slider.setPreferredSize(new Dimension(250, 50));
 		panel.add(slider, BorderLayout.CENTER);
 
 		JButton increase = new JButton("+");
@@ -197,7 +198,9 @@ public class InfinihedronControlWindow extends JPanel {
 		JButton button = new JButton("Tap");
 		button.setPreferredSize(new Dimension(200, 200));
 
-		TapToBeat ttb = new TapToBeat(i -> state.setBpm(60000 / i));
+		TapToBeat ttb = new TapToBeat(
+			i -> state.setBpm(60000 / i),
+			(x, state) -> button.setText("Tap" + (state == "idle" ? "" : "...")));
 
 		button.addActionListener(e -> ttb.tapped(System.currentTimeMillis()));
 
