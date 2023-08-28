@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+
 import OPC.OPC;
 
 import infinihedron.control.*;
@@ -44,6 +48,16 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 	private PaletteManager palettes = PaletteManager.getInstance();
 
 	public static void main(String[] args) {
+
+		// try {
+		// 	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		// } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+		// 		| UnsupportedLookAndFeelException e) {
+		// 	e.printStackTrace();
+		// }
+
+		//MetalLookAndFeel.setCurrentTheme(new Theme());
+		
 
 		// The argument passed to main must match the class name
 		PApplet.main("infinihedron.Infinihedron");
