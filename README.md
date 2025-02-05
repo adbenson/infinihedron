@@ -24,6 +24,6 @@ Beyond looking cool, there were a few design goals for this project:
 * FadeCandy USB-to-Neopixel driver
 * Raspberry Pi Zero W wireless controller
 * Software in Processing (based on Java)
-* Controlled on Microsoft Surface Go 2 tablet
+* Animations and UI running on Microsoft Surface Go 2 tablet
 
 There's still a lot of work potentially left to do on the software, but it does work! I look forward to getting back to it soon.
