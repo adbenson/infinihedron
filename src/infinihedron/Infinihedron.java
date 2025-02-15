@@ -67,14 +67,14 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 	public void settings() {
 		// Doesn't actually go "fullscreen", but does remove border and title bar.
 		fullScreen();
-		size(800, 800);
+		size(1200, 600);
 		mid = new Point(400, 400);
 	}
 
 	// identical use to setup in Processing IDE except for size()
 	public void setup() {
-		surface.setLocation(400, 0);
-		surface.setSize(800, 800);
+		surface.setLocation(0, 0);
+		surface.setSize(1200, 600);
 
 		scenes.put(SceneType.Blank, new BlankScene(this));
 		scenes.put(SceneType.Strobe, new StrobeScene(this));
@@ -98,7 +98,7 @@ public class Infinihedron extends PApplet implements ChangeListener<State> {
 			opc.led(p.index, (int)real.x, (int)real.y);
 		}
 		
-		InfinihedronControlWindow.launch();
+		InfinihedronControlPanel.launch();
 
 		stateManager.addChangeListener(this);
 
