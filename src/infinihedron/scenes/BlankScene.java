@@ -3,6 +3,7 @@ package infinihedron.scenes;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import infinihedron.control.DrawState;
 import infinihedron.control.SceneType;
 import processing.core.PApplet;
 
@@ -12,7 +13,8 @@ public class BlankScene extends Scene {
 		super(processing, SceneType.Blank);
 	}
 	
-	public void draw(long time) {
+	@Override
+	public void draw(DrawState drawState) {
 		p.fill(0);
 		p.rect(0, 0, p.height, p.width);
 	}

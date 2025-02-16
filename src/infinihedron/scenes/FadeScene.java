@@ -5,6 +5,7 @@ import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import infinihedron.control.DrawState;
 import infinihedron.control.SceneType;
 import processing.core.PApplet;
 
@@ -19,11 +20,14 @@ public class FadeScene extends Scene {
 	private int state = 0;
 
 	@Override
-	public void draw(long time, float beatFraction) {
+	public void draw(DrawState drawState) {
+		float beatFraction = drawState.beatFraction;
+System.out.println("FadeScene.draw start: " + beatFraction);
 		// int mid = (int)(255 * beatFraction);
 		Color color = palette.getColor(beatFraction);
 		p.fill(color.getRGB());
-		p.rect(0, 0, p.height, p.width);
+		p.rect(origin.x, origin.y, limit.x, limit.y);
+System.out.println("FadeScene.draw color: " + color.getRGB());
 	}
 	
 	@Override
@@ -32,6 +36,7 @@ public class FadeScene extends Scene {
 		// this.state = !this.state;
 
 		state = (state + 1) % 255;
+System.out.println("FadeScene.beat: " + state);
 	}
 
 	@Override

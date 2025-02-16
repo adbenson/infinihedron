@@ -18,9 +18,10 @@ public class MultipliedBeatRunner implements BeatListener {
 
 	@Override
 	public void beat(int superInterval) {
-		this.lastBeat = System.currentTimeMillis();
-		this.superInterval = superInterval;
-		restart();
+		listener.beat(interval);
+		// this.lastBeat = System.currentTimeMillis();
+		// this.superInterval = superInterval;
+		// restart();
 	}
 
 	public void setMultiplier(int multiplier) {

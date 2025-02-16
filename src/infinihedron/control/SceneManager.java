@@ -1,35 +1,43 @@
 package infinihedron.control;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
+import infinihedron.palettes.Palette;
+import infinihedron.palettes.PaletteManager;
 import infinihedron.palettes.PaletteType;
 import infinihedron.scenes.Scene;
 import processing.core.PApplet;
 
 public class SceneManager implements BeatListener {
 
+	public static final SceneType defaultSceneType = SceneType.Fade;
+	public static final PaletteType defaultPaletteType = PaletteType.Rainbow;
+	
+	private final PaletteManager paletteManager = PaletteManager.getInstance();
+
 	private HashMap<SceneType, Scene> scenes;
 	
-	private SceneType sceneType;
-
-	private PaletteType paletteType;
+	private Scene scene;
+	private Palette palette;
 
 	private MultipliedBeatRunner beatRunner;
 	
 	public SceneManager(PApplet processing) {
 		scenes = new HashMap<SceneType, Scene>();
 		instantiateScenes(processing);
-		sceneType = SceneType.Fade;
-		paletteType = PaletteType.Rainbow;
+		setSceneType(defaultSceneType);
+		setPaletteType(defaultPaletteType);
+		beatRunner = new MultipliedBeatRunner(interval -> {
+			getCurrentScene().beat(interval, System.currentTimeMillis());
+		});
 	}
 
 	private void instantiateScenes(PApplet processing) {
 		for (SceneType type : SceneType.values()) {
 			try {
 				Scene scene = instantiateScene(type, processing);
-				scene.setPaletteType(paletteType);
+				scene.setPalette(palette);
 				scenes.put(type, scene);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -45,25 +53,16 @@ public class SceneManager implements BeatListener {
 	}
 	
 	public Scene getCurrentScene() {
-		if (!scenes.containsKey(sceneType)) {
-			Class<? extends Scene> clazz = sceneType.clazz;
-			try {
-				Constructor<? extends Scene> ctor = clazz.getConstructor(new Class[] { PApplet.class });
-				Scene instance = ctor.newInstance(this);
-				scenes.put(sceneType, instance);
-			} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				e.printStackTrace();
-			}
-		}
-		return scenes.get(sceneType);
+		return scene;
 	}
 	
 	public void setSceneType(SceneType type) {
-		this.sceneType = type;
+		this.scene = scenes.get(type);
 	}
 
 	public void setPaletteType(PaletteType type) {
-		this.paletteType = type;
+		this.palette = paletteManager.get(type);
+		this.scene.setPalette(palette);
 	}
 
 	public Scene getScene(SceneType type) {

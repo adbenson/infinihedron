@@ -4,5 +4,6 @@ public enum PaletteType {
 	Blank,
 	BlackAndWhite,
 	Rainbow,
-	Aesthetic
+	Aesthetic,
+	Strobe
 }
