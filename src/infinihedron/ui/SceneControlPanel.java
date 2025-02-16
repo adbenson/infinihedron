@@ -71,7 +71,6 @@ public class SceneControlPanel extends JPanel {
 			PaletteType type = (PaletteType)combo.getSelectedItem();
 			manager.setPaletteType(type);
 		});
-		// combo.addActionListener(e -> state.getSceneA().setPalette((PaletteType)combo.getSelectedItem()));
 
 		panel.add(combo);
 

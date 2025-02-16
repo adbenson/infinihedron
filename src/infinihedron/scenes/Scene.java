@@ -12,11 +12,12 @@ import infinihedron.palettes.PaletteType;
 import processing.core.PApplet;
 
 public abstract class Scene {
+	private final PaletteManager paletteManager = PaletteManager.getInstance();
 	
 	public final SceneType type;
 
 	protected final PApplet p;
-	protected Palette palette = PaletteManager.getInstance().get(PaletteType.Blank);
+	protected Palette palette = paletteManager.get(PaletteType.Blank);
 
 	protected long lastBeat = 0;
 	protected int beatInterval = BeatRunner.DEFAULT_BPM * 60000;
@@ -48,6 +49,10 @@ public abstract class Scene {
 
 	public JPanel getControls() {
 		return new JPanel();
+	}
+
+	public void setPaletteType(PaletteType paletteType) {
+		setPalette(paletteManager.get(paletteType));
 	}
 
 }

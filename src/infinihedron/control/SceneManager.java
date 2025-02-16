@@ -8,25 +8,28 @@ import infinihedron.palettes.PaletteType;
 import infinihedron.scenes.Scene;
 import processing.core.PApplet;
 
-public class SceneManager {
+public class SceneManager implements BeatListener {
 
 	private HashMap<SceneType, Scene> scenes;
 	
 	private SceneType sceneType;
 
 	private PaletteType paletteType;
+
+	private MultipliedBeatRunner beatRunner;
 	
 	public SceneManager(PApplet processing) {
 		scenes = new HashMap<SceneType, Scene>();
 		instantiateScenes(processing);
-		sceneType = SceneType.Blank;
-		paletteType = PaletteType.Blank;
+		sceneType = SceneType.Fade;
+		paletteType = PaletteType.Rainbow;
 	}
 
 	private void instantiateScenes(PApplet processing) {
 		for (SceneType type : SceneType.values()) {
 			try {
 				Scene scene = instantiateScene(type, processing);
+				scene.setPaletteType(paletteType);
 				scenes.put(type, scene);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -65,6 +68,15 @@ public class SceneManager {
 
 	public Scene getScene(SceneType type) {
 		return scenes.get(type);
+	}
+
+	public void setMultiplier(int multiplier) {
+		beatRunner.setMultiplier(multiplier);
+	}
+
+	@Override
+	public void beat(int interval) {
+		beatRunner.beat(interval);
 	}
 	
 }

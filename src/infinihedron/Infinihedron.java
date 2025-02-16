@@ -2,6 +2,7 @@ package infinihedron;
 
 import java.awt.Point;
 
+import infinihedron.control.BeatRunner;
 import infinihedron.control.SceneManager;
 import infinihedron.ui.InfinihedronControlPanel;
 import processing.core.PApplet;
@@ -16,6 +17,8 @@ public class Infinihedron extends PApplet {
 
 	private SceneManager sceneA;
 	private SceneManager sceneB;
+
+	private BeatRunner beatRunner;
 
 	public static void main(String[] args) {
 		// The argument passed to main must match the class name
@@ -34,15 +37,20 @@ public class Infinihedron extends PApplet {
 		surface.setLocation(0, 0);
 		surface.setSize(WIDTH, HEIGHT);
 
+		beatRunner = new BeatRunner();
+
 		sceneA = new SceneManager(this);
 		sceneB = new SceneManager(this);
 
-		InfinihedronControlPanel.launch(sceneA, sceneB);
+		beatRunner.addListener(sceneA);
+		beatRunner.addListener(sceneB);
+
+		InfinihedronControlPanel.launch(sceneA, sceneB, beatRunner);
 	}
 
 	// identical use to draw in Prcessing IDE
 	public void draw() {
-		long time = millis();
+		long time = System.currentTimeMillis();
 
 		noStroke();
 		fill(0);

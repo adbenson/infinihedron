@@ -26,10 +26,18 @@ public class SharedControlPanel extends JPanel {
 	// private StateManager stateManager = StateManager.getInstance();
 	// private State state = stateManager.getCurrent();
 
+	public static final int[] MULTIPLIER_FACTORS = new int[] {
+		-8, -6, -4, -3, -2, 1, 2, 3, 4, 6, 8
+	};
+	public static final int DEFAULT_MULTIPLIER = 5;
+
 	private int bpm;
 
-	public SharedControlPanel() {
+	private BeatRunner beatRunner;
+
+	public SharedControlPanel(BeatRunner beatRunner) {
 		super();
+		this.beatRunner = beatRunner;
 		populate();
 	}
 
@@ -72,11 +80,11 @@ public class SharedControlPanel extends JPanel {
 		JButton button = new JButton("Tap");
 		button.setPreferredSize(new Dimension(100, 100));
 
-		// TapToBeat ttb = new TapToBeat(
-		// 	i -> state.setBpm(60000 / i),
-		// 	(x, state) -> button.setText("Tap" + (state == "idle" ? "" : "...")));
+		TapToBeat ttb = new TapToBeat(
+			i -> beatRunner.setBpm(60000 / i),
+			(x, state) -> button.setText("Tap" + (state == "idle" ? "" : "...")));
 
-		// button.addActionListener(e -> ttb.tapped(System.currentTimeMillis()));
+		button.addActionListener(e -> ttb.tapped(System.currentTimeMillis()));
 
 		panel.add(button);
 

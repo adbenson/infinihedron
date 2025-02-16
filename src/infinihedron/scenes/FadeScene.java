@@ -20,7 +20,7 @@ public class FadeScene extends Scene {
 
 	@Override
 	public void draw(long time, float beatFraction) {
-		int mid = (int)(255 * beatFraction);
+		// int mid = (int)(255 * beatFraction);
 		Color color = palette.getColor(beatFraction);
 		p.fill(color.getRGB());
 		p.rect(0, 0, p.height, p.width);
