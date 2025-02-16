@@ -3,11 +3,11 @@ package infinihedron.projections;
 import java.util.ArrayList;
 import java.util.List;
 
-import infinihedron.models.Layer;
-import infinihedron.models.Pixel;
-import infinihedron.models.Point;
-import infinihedron.models.Segment;
-import infinihedron.models.Vertex;
+import infinihedron.pixelControl.models.Layer;
+import infinihedron.pixelControl.models.Pixel;
+import infinihedron.pixelControl.models.Point;
+import infinihedron.pixelControl.models.Segment;
+import infinihedron.pixelControl.models.Vertex;
 
 public class StereographicProjection extends Projection {
 

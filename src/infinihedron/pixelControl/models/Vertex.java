@@ -1,4 +1,4 @@
-package infinihedron.models;
+package infinihedron.pixelControl.models;
 
 public class Vertex {
 	public final Layer layer;

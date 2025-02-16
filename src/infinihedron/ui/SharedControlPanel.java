@@ -12,10 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
-import infinihedron.control.BeatRate;
-import infinihedron.control.State;
-import infinihedron.control.StateManager;
-import infinihedron.palettes.TapToBeat;
+import infinihedron.control.BeatRunner;
 
 /**
  * Close button
@@ -26,12 +23,13 @@ import infinihedron.palettes.TapToBeat;
  */
 public class SharedControlPanel extends JPanel {
 
-	private StateManager stateManager = StateManager.getInstance();
-	private State state = stateManager.getCurrent();
+	// private StateManager stateManager = StateManager.getInstance();
+	// private State state = stateManager.getCurrent();
+
+	private int bpm;
 
 	public SharedControlPanel() {
 		super();
-		this.setOpaque(true);
 		populate();
 	}
 
@@ -72,13 +70,13 @@ public class SharedControlPanel extends JPanel {
 		JPanel panel = new JPanel();
 
 		JButton button = new JButton("Tap");
-		button.setPreferredSize(new Dimension(200, 200));
+		button.setPreferredSize(new Dimension(100, 100));
 
-		TapToBeat ttb = new TapToBeat(
-			i -> state.setBpm(60000 / i),
-			(x, state) -> button.setText("Tap" + (state == "idle" ? "" : "...")));
+		// TapToBeat ttb = new TapToBeat(
+		// 	i -> state.setBpm(60000 / i),
+		// 	(x, state) -> button.setText("Tap" + (state == "idle" ? "" : "...")));
 
-		button.addActionListener(e -> ttb.tapped(System.currentTimeMillis()));
+		// button.addActionListener(e -> ttb.tapped(System.currentTimeMillis()));
 
 		panel.add(button);
 
@@ -86,42 +84,38 @@ public class SharedControlPanel extends JPanel {
 	}
 
 	private JPanel bpmControl() {
-		JPanel panel = new JPanel(new BorderLayout(5, 5));
+		JPanel panel = new JPanel();
 
 		JButton decrease = new JButton("-");
 		decrease.setPreferredSize(new Dimension(50, 50));
-		decrease.addActionListener(e -> state.setBpm(state.getBpm() - 1));
+		// decrease.addActionListener(e -> state.setBpm(state.getBpm() - 1));
 		panel.add(decrease, BorderLayout.WEST);
 
-		JLabel label = new JLabel(BeatRate.DEFAULT_BPM + " bpm", SwingConstants.CENTER);
+		JLabel label = new JLabel(BeatRunner.DEFAULT_BPM + " bpm", SwingConstants.CENTER);
 		panel.add(label, BorderLayout.NORTH);
-
-		JSlider slider = new JSlider(BeatRate.MIN_BPM, BeatRate.MAX_BPM, BeatRate.DEFAULT_BPM);
-		slider.setMajorTickSpacing(20);
-		slider.setMinorTickSpacing(10);
-		slider.setPaintTicks(true);
-		slider.setPaintLabels(true);
-		slider.setPreferredSize(new Dimension(250, 50));
-		panel.add(slider, BorderLayout.CENTER);
 
 		JButton increase = new JButton("+");
 		increase.setPreferredSize(new Dimension(50, 50));
-		increase.addActionListener(e -> state.setBpm(state.getBpm() + 1));
+		// increase.addActionListener(e -> state.setBpm(state.getBpm() + 1));
 		panel.add(increase, BorderLayout.EAST);
 	
-		stateManager.addChangeListener((state, prop) -> {
-			int bpm = state.getBpm();
-			label.setText(bpm + " bpm");
-			slider.setValue(bpm);
-		});
-
-		slider.addChangeListener(e -> state.setBpm(slider.getValue()));
+		// stateManager.addChangeListener((state, prop) -> {
+		// 	int bpm = state.getBpm();
+		// 	label.setText(bpm + " bpm");
+		// });
 
 		return panel;
 	}
 
 	private JPanel fadeSlider() {
 		JPanel panel = new JPanel();
+
+		JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+		slider.setMinorTickSpacing(1);
+
+		slider.addChangeListener(__ -> {
+			// state.setFade(slider.getValue() / 100.0f);
+		});
 
 		return panel;
 	}

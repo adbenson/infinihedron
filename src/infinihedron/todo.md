@@ -4,6 +4,6 @@
 * Tap to Beat
 * Scene B
 * Layout
-* Simplify Effect addition
+X Simplify Effect addition
 * Simplify Palette addition
 * Beat package

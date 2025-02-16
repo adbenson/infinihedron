@@ -1,21 +1,19 @@
 package infinihedron.ui;
 
+import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.util.Hashtable;
 
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
 
-import infinihedron.control.BeatRate;
+import infinihedron.control.SceneManager;
+import infinihedron.control.SceneType;
 import infinihedron.palettes.PaletteManager;
 import infinihedron.palettes.PaletteType;
-import infinihedron.scenes.SceneType;
+import infinihedron.scenes.Scene;
 
 /**
  * Scene selection
@@ -28,9 +26,13 @@ public class SceneControlPanel extends JPanel {
 
 	private PaletteManager palettes = PaletteManager.getInstance();
 
-	public SceneControlPanel() {
+	private SceneManager manager;
+
+	private JPanel sceneSpecificControls;
+
+	public SceneControlPanel(SceneManager manager) {
 		super();
-		this.setOpaque(true);
+		this.manager = manager;
 		populate();
 	}
 
@@ -38,16 +40,23 @@ public class SceneControlPanel extends JPanel {
 		this.setPreferredSize(new Dimension(400, 200));
 		this.add(sceneSelector());
 		this.add(palettes());
-		this.add(multiplierSlider());
+		this.add(sceneSpecificControls());
 	}
 
 	private JPanel sceneSelector() {
 		JPanel panel = new JPanel();
 		JComboBox<SceneType> combo = new JComboBox<>(SceneType.values());
-		// combo.addActionListener();
 		
+		combo.addActionListener(e -> sceneSelected((SceneType)combo.getSelectedItem()));
+
 		panel.add(combo);
 		return panel;
+	}
+
+	private void sceneSelected(SceneType type) {
+		manager.setSceneType(type);
+		CardLayout layout = (CardLayout)sceneSpecificControls.getLayout();
+		layout.show(sceneSpecificControls, type.name());
 	}
 
 	private JPanel palettes() {
@@ -58,6 +67,10 @@ public class SceneControlPanel extends JPanel {
 		PaletteRenderer renderer = new PaletteRenderer();
 		combo.setRenderer(renderer);
 
+		combo.addActionListener(l -> {
+			PaletteType type = (PaletteType)combo.getSelectedItem();
+			manager.setPaletteType(type);
+		});
 		// combo.addActionListener(e -> state.getSceneA().setPalette((PaletteType)combo.getSelectedItem()));
 
 		panel.add(combo);
@@ -65,42 +78,17 @@ public class SceneControlPanel extends JPanel {
 		return panel;
 	}
 
-	private JPanel multiplierSlider() {
-		JSlider slider = new JSlider(0, BeatRate.MULTIPLIER_FACTORS.length - 1, BeatRate.DEFAULT_MULTIPLIER);
 
-		Hashtable<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
-		for (int i = 0; i < BeatRate.MULTIPLIER_FACTORS.length; i++) {
-			String label = getMultiplierLabel(i);
-			labels.put(i, new JLabel(label));
+	private JPanel sceneSpecificControls() {
+		sceneSpecificControls = new JPanel(new CardLayout());
+		for(SceneType type : SceneType.values()) {
+			Scene scene = manager.getScene(type);
+			if (scene == null) {
+				throw new RuntimeException("WTF");
+			}
+			sceneSpecificControls.add(scene.getControls(), type.name());
 		}
-
-		slider.setLabelTable(labels);
-
-		slider.setMajorTickSpacing(1);
-		slider.setPaintTicks(true);
-		slider.setPaintLabels(true);
-		slider.setOrientation(SwingConstants.VERTICAL);
-
-		// slider.addChangeListener(e -> state.getSceneA().setMultiplier(slider.getValue()));
-
-		JLabel label = new JLabel("1x");
-		// stateManager.addChangeListener((state, prop) -> label.setText(getMultiplierLabel(state.getSceneA().getMultiplier())));
-
-		JPanel panel = new JPanel();
-
-		panel.add(label);
-		panel.add(slider);
-
-		return panel;
-	}
-
-	private String getMultiplierLabel(int multiplier) {
-		int factor = BeatRate.MULTIPLIER_FACTORS[multiplier];
-		if (factor > 0) {
-			return factor + "x";
-		} else {
-			return "/" + (-factor);
-		}
+		return sceneSpecificControls;
 	}
 
 	class PaletteRenderer implements ListCellRenderer<PaletteType> {

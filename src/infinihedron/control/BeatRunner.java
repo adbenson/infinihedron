@@ -5,7 +5,7 @@ import java.util.Set;
 
 import processing.core.PApplet;
 
-public class BeatRate {
+public class BeatRunner {
 
 	public static final int MIN_BPM = 60;
 	public static final int MAX_BPM = 220;
@@ -29,7 +29,7 @@ public class BeatRate {
 
 	private Set<BeatListener> listeners = new HashSet<>();
 
-	public BeatRate(PApplet processing) {
+	public BeatRunner(PApplet processing) {
 		this.processing = processing;
 		updateBpm(DEFAULT_BPM);
 		beatNow();

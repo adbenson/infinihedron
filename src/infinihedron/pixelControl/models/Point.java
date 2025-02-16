@@ -1,4 +1,4 @@
-package infinihedron.models;
+package infinihedron.pixelControl.models;
 
 import processing.core.PVector;
 

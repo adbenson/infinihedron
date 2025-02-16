@@ -6,32 +6,34 @@ import java.awt.FlowLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import infinihedron.Infinihedron;
+import infinihedron.control.SceneManager;
+
 public class InfinihedronControlPanel extends JPanel {
 
-	public static void launch() {
-		javax.swing.SwingUtilities.invokeLater(() -> start());
+	public static final int HEIGHT = 200;
+
+	public static void launch(SceneManager sceneA, SceneManager sceneB) {
+		javax.swing.SwingUtilities.invokeLater(() -> start(sceneA, sceneB));
 	}
 
-	public InfinihedronControlPanel() {
+	public InfinihedronControlPanel(SceneManager managerA, SceneManager managerB) {
 		super(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		this.setOpaque(true);
-		populate();
-	}
 
-	private void populate() {
-		add(new SceneControlPanel());
+		add(new SceneControlPanel(managerA));
 		add(new SharedControlPanel());
-		add(new SceneControlPanel());
+		add(new SceneControlPanel(managerB));
 	}
 
-	private static void start() {
+	private static void start(SceneManager sceneA, SceneManager sceneB) {
 		JFrame frame = new JFrame("Infinihedron");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(1200, 200));
-		frame.setLocation(0, 600);
+		frame.setPreferredSize(new Dimension(Infinihedron.WIDTH, HEIGHT));
+		frame.setLocation(0, Infinihedron.HEIGHT);
 		frame.setUndecorated(true);
 
-		JPanel content = new InfinihedronControlPanel();
+		JPanel content = new InfinihedronControlPanel(sceneA, sceneB);
 		frame.setContentPane(content);
 
 		frame.pack();

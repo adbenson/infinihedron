@@ -3,8 +3,8 @@ package infinihedron.projections;
 import java.util.ArrayList;
 import java.util.List;
 
-import infinihedron.models.Pixel;
-import infinihedron.models.Point;
+import infinihedron.pixelControl.models.Pixel;
+import infinihedron.pixelControl.models.Point;
 
 public abstract class Projection {
 

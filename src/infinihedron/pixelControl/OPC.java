@@ -1,4 +1,4 @@
-package OPC;
+package infinihedron.pixelControl;
 
 /*
  * Simple Open Pixel Control client for Processing,
@@ -10,7 +10,8 @@ package OPC;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.*;
+import java.net.ConnectException;
+import java.net.Socket;
 import java.util.Arrays;
 
 import processing.core.PApplet;
@@ -24,19 +25,27 @@ public class OPC implements Runnable {
 	int port;
 
 	int[] pixelLocations;
+	int rightOffset;
 	byte[] packetData;
 	byte firmwareConfig;
 	String colorCorrection;
 	boolean enableShowLocations;
 
+	private float fade;
+
 	public OPC(PApplet parent, String host, int port) {
 		this.p = parent;
 		this.host = host;
 		this.port = port;
+		this.fade = 0.0f;
 		thread = new Thread(this);
 		thread.start();
 		this.enableShowLocations = true;
 		parent.registerMethod("draw", this);
+	}
+
+	public void setFade(float fade) {
+		this.fade = fade;
 	}
 
 	public boolean isConnected() {
@@ -50,6 +59,7 @@ public class OPC implements Runnable {
 		// instead of a HashMap, to keep draw() as fast as it can be.
 		if (pixelLocations == null) {
 			pixelLocations = new int[index + 1];
+			rightOffset = p.width / 2;
 		} else if (index >= pixelLocations.length) {
 			pixelLocations = Arrays.copyOf(pixelLocations, index + 1);
 		}
@@ -245,15 +255,22 @@ public class OPC implements Runnable {
 
 		for (int i = 0; i < numPixels; i++) {
 			int pixelLocation = pixelLocations[i];
-			int pixel = p.pixels[pixelLocation];
+			int pixelLeft = p.pixels[pixelLocation];
+			int pixelRight = p.pixels[pixelLocation + rightOffset];
+
+			byte r = (byte) (((pixelLeft >> 16) & 0xFF) * (1 - fade) + ((pixelRight >> 16) & 0xFF) * fade);
+			byte g = (byte) (((pixelLeft >> 8) & 0xFF) * (1 - fade) + ((pixelRight >> 8) & 0xFF) * fade);
+			byte b = (byte) ((pixelLeft & 0xFF) * (1 - fade) + (pixelRight & 0xFF) * fade);
+
 // System.out.println(pixelLocation + "\t" + hex(pixel));
-			packetData[ledAddress] = (byte) (pixel >> 16);
-			packetData[ledAddress + 1] = (byte) (pixel >> 8);
-			packetData[ledAddress + 2] = (byte) pixel;
+			packetData[ledAddress] = (byte) r;
+			packetData[ledAddress + 1] = (byte) g;
+			packetData[ledAddress + 2] = (byte) b;
 			ledAddress += 3;
 
 			if (enableShowLocations) {
-				p.pixels[pixelLocation] = 0xFFFFFF ^ pixel;
+				p.pixels[pixelLocation] = 0xFFFFFF ^ pixelLeft;
+				p.pixels[pixelLocation + rightOffset] = 0xFFFFFF ^ pixelRight;
 			}
 		}
 

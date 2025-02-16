@@ -1,4 +1,4 @@
-package infinihedron.palettes;
+package infinihedron.ui;
 
 import java.util.ArrayList;
 import java.util.List;

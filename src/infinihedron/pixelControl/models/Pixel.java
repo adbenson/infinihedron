@@ -1,4 +1,4 @@
-package infinihedron.models;
+package infinihedron.pixelControl.models;
 
 public class Pixel extends Point {
 	public final int index;
