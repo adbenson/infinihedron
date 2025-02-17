@@ -23,7 +23,8 @@ public abstract class Scene implements BeatListener {
 	protected Palette palette = paletteManager.get(PaletteType.Blank);
 
 	protected long lastBeat = 0;
-	protected int beatInterval = BeatRunner.DEFAULT_BPM * 60000;
+	protected int superInterval = BeatRunner.DEFAULT_INTERVAL;
+	protected int beatInterval = BeatRunner.DEFAULT_INTERVAL;
 
 	protected Random random;
 

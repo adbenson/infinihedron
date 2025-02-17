@@ -6,14 +6,14 @@ import java.util.Set;
 public class BeatRunner {
 
 	public static final int BPM_TO_MS = 60000;
-	public static final int DEFAULT_BPM = 120;
-	public static final int DEFAULT_INTERVAL = 60000 / 120;
+	public static final int DEFAULT_BPM = 60;
+	public static final int DEFAULT_INTERVAL = BPM_TO_MS / DEFAULT_BPM;
 
 	private int interval = 0;
 	private long prevBeat = 0;
 	private float intervalReciprocal = 0;
 
-	private BeatLoop beat;
+	private BeatLoop loop;
 
 	private Set<BeatListener> listeners = new HashSet<>();
 
@@ -53,11 +53,11 @@ public class BeatRunner {
 	}
 
 	private synchronized void startBeatLoop() {
-		if (beat != null) {
-			beat.stop();
+		if (loop != null) {
+			loop.stop();
 		}
 
-		beat = new BeatLoop(interval, __ -> beat());
+		loop = new BeatLoop(interval, __ -> beat());
 	}
 
 }

@@ -6,7 +6,7 @@ public class BeatLoop {
 	private final int interval;
 	private final BeatListener listener;
 
-	private volatile boolean stop = false;
+	private volatile boolean isStopped = false;
 	private volatile long nextBeat;
 
 	public BeatLoop(int interval, BeatListener listener) {
@@ -18,14 +18,14 @@ public class BeatLoop {
 	}
 
 	public synchronized void stop() {
-		if (!this.stop) {
+		if (!this.isStopped) {
 			System.out.println("Stopped beat stopped again.");
 		}
-		this.stop = true;
+		this.isStopped = true;
 	}
 
 	private void loop() {
-		while (!stop) {
+		while (!isStopped) {
 			listener.beat(interval);
 			nextBeat += interval;
 			long timeToNextBeat = nextBeat - System.currentTimeMillis();
