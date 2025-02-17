@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.Rectangle;
 
 import javax.swing.BorderFactory;
@@ -17,6 +18,7 @@ import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicSliderUI;
 
 import infinihedron.control.BeatRunner;
+import infinihedron.control.ChangeListener;
 
 /**
  * Close button
@@ -27,7 +29,9 @@ import infinihedron.control.BeatRunner;
  */
 public class SharedControlPanel extends JPanel {
 
-	private final Font bigFont = new Font("Arial", Font.BOLD, 24);
+	private final int textMargin = 2;
+	private final Insets insets = new Insets(textMargin, textMargin, textMargin, textMargin);
+	private final Font bigFont = new Font("Arial", Font.BOLD, 32);
 
 	// private StateManager stateManager = StateManager.getInstance();
 	// private State state = stateManager.getCurrent();
@@ -40,12 +44,14 @@ public class SharedControlPanel extends JPanel {
 	private int beatInterval = BeatRunner.DEFAULT_INTERVAL;
 
 	private BeatRunner beatRunner;
+	private ChangeListener<Float> fadeChangeListener;
 
 	private JLabel bpmLabel;
 
-	public SharedControlPanel(BeatRunner beatRunner) {
+	public SharedControlPanel(BeatRunner beatRunner, ChangeListener<Float> fadeChangeListener) {
 		super();
 		this.beatRunner = beatRunner;
+		this.fadeChangeListener = fadeChangeListener;
 		populate();
 	}
 
@@ -60,7 +66,9 @@ public class SharedControlPanel extends JPanel {
 	}
 
 	private JButton closeButton() {
-		JButton close = new JButton("x");
+		JButton close = new JButton("X");
+		close.setMargin(insets);
+		close.setFont(new Font("Arial", Font.PLAIN, 28));
 		close.setPreferredSize(new Dimension(30, 30));
 		close.addActionListener(e -> System.exit(0));
 		return close;
@@ -86,6 +94,7 @@ public class SharedControlPanel extends JPanel {
 		JPanel panel = new JPanel();
 
 		JButton button = new JButton("Tap");
+		button.setMargin(insets);
 		button.setFont(bigFont);
 		button.setPreferredSize(new Dimension(100, 100));
 
@@ -104,6 +113,7 @@ public class SharedControlPanel extends JPanel {
 		JPanel panel = new JPanel();
 
 		JButton decrease = new JButton("-");
+		decrease.setMargin(insets);
 		decrease.setFont(bigFont);
 		decrease.setPreferredSize(new Dimension(50, 50));
 		decrease.addActionListener(__ -> changeBpm(-1));
@@ -115,6 +125,7 @@ public class SharedControlPanel extends JPanel {
 		panel.add(bpmLabel, BorderLayout.NORTH);
 
 		JButton increase = new JButton("+");
+		increase.setMargin(insets);
 		increase.setFont(bigFont);
 		increase.setPreferredSize(new Dimension(50, 50));
 		increase.addActionListener(__ -> changeBpm(1));
@@ -164,7 +175,7 @@ public class SharedControlPanel extends JPanel {
 		slider.setMinorTickSpacing(1);
 
 		slider.addChangeListener(__ -> {
-			// state.setFade(slider.getValue() / 100.0f);
+			fadeChangeListener.changed(slider.getValue() / 100.0f, "sceneFader");
 		});
 
 		panel.add(slider);

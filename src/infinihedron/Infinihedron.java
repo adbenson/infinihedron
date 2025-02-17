@@ -47,9 +47,11 @@ public class Infinihedron extends PApplet {
 		beatRunner.addListener(sceneA);
 		beatRunner.addListener(sceneB);
 
-		new PixelController(this, "localhost");
+		PixelController pixels = new PixelController(this, "localhost");
 
-		InfinihedronControlPanel.launch(sceneA, sceneB, beatRunner);
+		InfinihedronControlPanel.launch(sceneA, sceneB, beatRunner, (fade, __) -> {
+			pixels.setFade(fade);
+		});
 	}
 
 	// identical use to draw in Prcessing IDE
