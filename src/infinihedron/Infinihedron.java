@@ -3,7 +3,6 @@ package infinihedron;
 import java.awt.Point;
 
 import infinihedron.control.BeatRunner;
-import infinihedron.control.DrawState;
 import infinihedron.control.SceneManager;
 import infinihedron.palettes.PaletteType;
 import infinihedron.pixelControl.PixelController;
@@ -69,20 +68,15 @@ public class Infinihedron extends PApplet {
 
 	// identical use to draw in Prcessing IDE
 	public void draw() {
-		long time = System.currentTimeMillis();
-
 		noStroke();
 		fill(0);
 		rect(0, 0, width, height);
 
 		translate(midPointA.x, midPointA.y);
-
-		DrawState state = new DrawState(time, beatRunner.getBeatFraction());
-	
-		sceneA.getCurrentScene().draw(state);
+		sceneA.getCurrentScene().draw();
 
 		translate(midPointB.x - midPointA.x, 0);
-		sceneB.getCurrentScene().draw(state);
+		sceneB.getCurrentScene().draw();
 	}
 
 

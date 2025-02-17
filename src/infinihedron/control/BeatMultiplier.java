@@ -1,6 +1,6 @@
 package infinihedron.control;
 
-public class MultipliedBeatRunner implements BeatListener {
+public class BeatMultiplier implements BeatListener {
 
 	private int multiplier;
 	private int superInterval;
@@ -9,7 +9,7 @@ public class MultipliedBeatRunner implements BeatListener {
 	private long lastBeat;
 	private BeatLoop loop;
 
-	public MultipliedBeatRunner(BeatListener listener) {
+	public BeatMultiplier(BeatListener listener) {
 		multiplier = 1;
 		interval = 0;
 		lastBeat = 0;

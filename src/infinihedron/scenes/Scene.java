@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.swing.JPanel;
 
 import infinihedron.control.BeatListener;
+import infinihedron.control.BeatMultiplier;
 import infinihedron.control.BeatRunner;
 import infinihedron.control.DrawState;
 import infinihedron.control.SceneType;
@@ -30,6 +31,9 @@ public abstract class Scene implements BeatListener {
 
 	protected Point origin;
 	protected Point limit;
+
+	protected BeatMultiplier beatRunner;
+	protected DrawState drawState;
 	
 	Scene(PApplet processing, SceneType type) {
 		this.p = processing;
@@ -39,7 +43,7 @@ public abstract class Scene implements BeatListener {
 		this.origin = new Point(-processing.width / 4, -processing.height / 2);		
 	}
 	
-	public abstract void draw(DrawState drawState);
+	public abstract void draw();
 	
 	@Override
 	public final void beat(int interval) {
