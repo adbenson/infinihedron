@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import infinihedron.control.BeatListener;
-import infinihedron.control.ChangeListener;
+import infinihedron.control.Change;
 
 public class TapToBeat {
 
@@ -14,15 +14,15 @@ public class TapToBeat {
 	private List<Integer> tapIntervals = new ArrayList<>();
 	private long previousTap = 0;
 	private BeatListener listener;
-	private ChangeListener<TapToBeat> statusChangeListener;
+	private Change<String> statusChangeListener;
 
-	public TapToBeat(BeatListener listener, ChangeListener<TapToBeat> statusChangeListener) {
+	public TapToBeat(BeatListener listener, Change<String> statusChangeListener) {
 		this.listener = listener;
 		this.statusChangeListener = statusChangeListener;
 	}
 
 	public void tapped(long time) {
-		this.statusChangeListener.changed(this, "tapping");
+		this.statusChangeListener.changed("tapping");
 		// If this is the first tap in a new set, there's no interval to calculate
 		if (previousTap != 0) {
 			tapIntervals.add((int)(time - previousTap));
@@ -54,7 +54,7 @@ public class TapToBeat {
 	private void reset() {
 		tapIntervals = new ArrayList<>();
 		previousTap = 0;
-		statusChangeListener.changed(this, "idle");
+		statusChangeListener.changed("idle");
 	}
 
 	private void calculateBeat() {

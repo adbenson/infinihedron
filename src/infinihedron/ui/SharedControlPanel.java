@@ -18,7 +18,7 @@ import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicSliderUI;
 
 import infinihedron.control.BeatRunner;
-import infinihedron.control.ChangeListener;
+import infinihedron.control.Change;
 
 /**
  * Close button
@@ -33,25 +33,19 @@ public class SharedControlPanel extends JPanel {
 	private final Insets insets = new Insets(textMargin, textMargin, textMargin, textMargin);
 	private final Font bigFont = new Font("Arial", Font.BOLD, 32);
 
-	// private StateManager stateManager = StateManager.getInstance();
-	// private State state = stateManager.getCurrent();
-
-	public static final int[] MULTIPLIER_FACTORS = new int[] {
-		-8, -6, -4, -3, -2, 1, 2, 3, 4, 6, 8
-	};
-	public static final int DEFAULT_MULTIPLIER = 5;
-
 	private int beatInterval = BeatRunner.DEFAULT_INTERVAL;
 
-	private BeatRunner beatRunner;
-	private ChangeListener<Float> fadeChangeListener;
+	private Change<Integer> intervalListener;
+	private Change<Float> fadeListener;
+	private Change<String> exitListener;
 
 	private JLabel bpmLabel;
 
-	public SharedControlPanel(BeatRunner beatRunner, ChangeListener<Float> fadeChangeListener) {
+	public SharedControlPanel(Change<Integer> intervalListener, Change<Float> fadeListener, Change<String> exitListener) {
 		super();
-		this.beatRunner = beatRunner;
-		this.fadeChangeListener = fadeChangeListener;
+		this.intervalListener = intervalListener;
+		this.fadeListener = fadeListener;
+		this.exitListener = exitListener;
 		populate();
 	}
 
@@ -70,7 +64,7 @@ public class SharedControlPanel extends JPanel {
 		close.setMargin(insets);
 		close.setFont(new Font("Arial", Font.PLAIN, 28));
 		close.setPreferredSize(new Dimension(30, 30));
-		close.addActionListener(e -> System.exit(0));
+		close.addActionListener(e -> exitListener.changed("exit"));
 		return close;
 	}
 
@@ -100,7 +94,7 @@ public class SharedControlPanel extends JPanel {
 
 		TapToBeat ttb = new TapToBeat(
 			i -> setInterval(i),
-			(x, state) -> button.setText(state == "idle" ? "Tap" : "..."));
+			state -> button.setText(state == "idle" ? "Tap" : "..."));
 
 		button.addActionListener(e -> ttb.tapped(System.currentTimeMillis()));
 
@@ -143,7 +137,7 @@ public class SharedControlPanel extends JPanel {
 			return; 
 		}
 		beatInterval = interval;
-		this.beatRunner.setInterval(interval);
+		this.intervalListener.changed(interval);
 		updateBpmLabel();
 	}
 
@@ -175,7 +169,7 @@ public class SharedControlPanel extends JPanel {
 		slider.setMinorTickSpacing(1);
 
 		slider.addChangeListener(__ -> {
-			fadeChangeListener.changed(slider.getValue() / 100.0f, "sceneFader");
+			fadeListener.changed(slider.getValue() / 100.0f);
 		});
 
 		panel.add(slider);

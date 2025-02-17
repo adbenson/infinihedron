@@ -7,19 +7,18 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import infinihedron.Infinihedron;
-import infinihedron.control.BeatRunner;
-import infinihedron.control.ChangeListener;
+import infinihedron.control.Change;
 import infinihedron.control.SceneManager;
 
 public class InfinihedronControlPanel extends JPanel {
 
 	public static final int HEIGHT = 200;
 
-	public static void launch(SceneManager sceneA, SceneManager sceneB, BeatRunner beatRunner, ChangeListener<Float> fadeChangeListener) {
-		javax.swing.SwingUtilities.invokeLater(() -> new InfinihedronControlPanel(sceneA, sceneB, beatRunner, fadeChangeListener));
+	public static void launch(SceneManager sceneA, SceneManager sceneB, Change<Integer> intervalListener, Change<Float> fadeListener, Change<String> exitListener) {
+		javax.swing.SwingUtilities.invokeLater(() -> new InfinihedronControlPanel(sceneA, sceneB, intervalListener, fadeListener, exitListener));
 	}
 
-	public InfinihedronControlPanel(SceneManager sceneA, SceneManager sceneB, BeatRunner beatRunner, ChangeListener<Float> fadeChangeListener) {
+	public InfinihedronControlPanel(SceneManager sceneA, SceneManager sceneB, Change<Integer> intervalListener, Change<Float> fadeListener, Change<String> exitListener) {
 		super(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		this.setOpaque(true);
 
@@ -31,7 +30,7 @@ public class InfinihedronControlPanel extends JPanel {
 
 		// JPanel content = new InfinihedronControlPanel();
 		this.add(new SceneControlPanel(sceneA));
-		this.add(new SharedControlPanel(beatRunner, fadeChangeListener));
+		this.add(new SharedControlPanel(intervalListener, fadeListener, exitListener));
 		this.add(new SceneControlPanel(sceneB));
 
 		frame.setContentPane(this);
