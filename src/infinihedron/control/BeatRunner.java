@@ -5,11 +5,10 @@ import java.util.Set;
 
 public class BeatRunner {
 
-	public static final int MIN_BPM = 60;
-	public static final int MAX_BPM = 220;
+	public static final int BPM_TO_MS = 60000;
 	public static final int DEFAULT_BPM = 120;
+	public static final int DEFAULT_INTERVAL = 60000 / 120;
 
-	private int bpm = DEFAULT_BPM;
 	private int interval = 0;
 	private long prevBeat = 0;
 	private float intervalReciprocal = 0;
@@ -19,13 +18,12 @@ public class BeatRunner {
 	private Set<BeatListener> listeners = new HashSet<>();
 
 	public BeatRunner() {
-		setBpm(DEFAULT_BPM);
+		setInterval(DEFAULT_INTERVAL);
 		beatNow();
 	}
 
-	public void setBpm(int bpm) {
-		this.bpm = bpm;
-		update();
+	public void setInterval(int interval) {
+		this.interval = interval;
 	}
 
 	public void beatNow() {
@@ -37,7 +35,6 @@ public class BeatRunner {
 	}
 
 	private void update() {
-		interval = 60000 / bpm;
 		intervalReciprocal = 1.0f / interval;
 		prevBeat = System.currentTimeMillis();
 		startBeatLoop();
