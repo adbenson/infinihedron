@@ -60,9 +60,8 @@ public class SharedControlPanel extends JPanel {
 	}
 
 	private JButton closeButton() {
-		JButton close = new JButton("X");
-		close.setFont(bigFont);
-		close.setPreferredSize(new Dimension(50, 50));
+		JButton close = new JButton("x");
+		close.setPreferredSize(new Dimension(30, 30));
 		close.addActionListener(e -> System.exit(0));
 		return close;
 	}

@@ -24,6 +24,7 @@ public class BeatRunner {
 
 	public void setInterval(int interval) {
 		this.interval = interval;
+		update();
 	}
 
 	public void beatNow() {
