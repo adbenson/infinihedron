@@ -5,6 +5,7 @@ import java.awt.Point;
 import infinihedron.control.BeatRunner;
 import infinihedron.control.DrawState;
 import infinihedron.control.SceneManager;
+import infinihedron.pixelControl.PixelController;
 import infinihedron.ui.InfinihedronControlPanel;
 import processing.core.PApplet;
 
@@ -46,12 +47,13 @@ public class Infinihedron extends PApplet {
 		beatRunner.addListener(sceneA);
 		beatRunner.addListener(sceneB);
 
+		new PixelController(this, "localhost");
+
 		InfinihedronControlPanel.launch(sceneA, sceneB, beatRunner);
 	}
 
 	// identical use to draw in Prcessing IDE
 	public void draw() {
-System.out.println("Infinihedron.draw");
 		long time = System.currentTimeMillis();
 
 		noStroke();
@@ -62,7 +64,6 @@ System.out.println("Infinihedron.draw");
 
 		DrawState state = new DrawState(time, beatRunner.getBeatFraction());
 	
-System.out.println(sceneA.getCurrentScene());
 		sceneA.getCurrentScene().draw(state);
 
 		translate(midPointB.x - midPointA.x, 0);

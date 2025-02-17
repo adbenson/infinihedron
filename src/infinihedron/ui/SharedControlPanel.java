@@ -23,6 +23,8 @@ import infinihedron.control.BeatRunner;
  */
 public class SharedControlPanel extends JPanel {
 
+	private final Font bigFont = new Font("Arial", Font.BOLD, 24);
+
 	// private StateManager stateManager = StateManager.getInstance();
 	// private State state = stateManager.getCurrent();
 
@@ -53,6 +55,7 @@ public class SharedControlPanel extends JPanel {
 
 	private JButton closeButton() {
 		JButton close = new JButton("X");
+		close.setFont(bigFont);
 		close.setPreferredSize(new Dimension(50, 50));
 		close.addActionListener(e -> System.exit(0));
 		return close;
@@ -78,11 +81,12 @@ public class SharedControlPanel extends JPanel {
 		JPanel panel = new JPanel();
 
 		JButton button = new JButton("Tap");
+		button.setFont(bigFont);
 		button.setPreferredSize(new Dimension(100, 100));
 
 		TapToBeat ttb = new TapToBeat(
 			i -> beatRunner.setBpm(60000 / i),
-			(x, state) -> button.setText("Tap" + (state == "idle" ? "" : "...")));
+			(x, state) -> button.setText(state == "idle" ? "Tap" : "..."));
 
 		button.addActionListener(e -> ttb.tapped(System.currentTimeMillis()));
 
@@ -95,6 +99,7 @@ public class SharedControlPanel extends JPanel {
 		JPanel panel = new JPanel();
 
 		JButton decrease = new JButton("-");
+		decrease.setFont(bigFont);
 		decrease.setPreferredSize(new Dimension(50, 50));
 		// decrease.addActionListener(e -> state.setBpm(state.getBpm() - 1));
 		panel.add(decrease, BorderLayout.WEST);
@@ -103,6 +108,7 @@ public class SharedControlPanel extends JPanel {
 		panel.add(label, BorderLayout.NORTH);
 
 		JButton increase = new JButton("+");
+		increase.setFont(bigFont);
 		increase.setPreferredSize(new Dimension(50, 50));
 		// increase.addActionListener(e -> state.setBpm(state.getBpm() + 1));
 		panel.add(increase, BorderLayout.EAST);
@@ -119,11 +125,28 @@ public class SharedControlPanel extends JPanel {
 		JPanel panel = new JPanel();
 
 		JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+
+		slider.setUI(new BasicSliderUI(slider) {
+            @Override
+            protected Dimension getThumbSize() {
+                return new Dimension(20, 20); // Set custom thumb size
+            }
+			@Override
+			public void paintThumb(Graphics g) {
+				Rectangle knobBounds = thumbRect;
+				g.setColor(Color.black);
+				g.fillRect(knobBounds.x, knobBounds.y, 20, 20);
+			}
+        });
+		
+
 		slider.setMinorTickSpacing(1);
 
 		slider.addChangeListener(__ -> {
 			// state.setFade(slider.getValue() / 100.0f);
 		});
+
+		panel.add(slider);
 
 		return panel;
 	}

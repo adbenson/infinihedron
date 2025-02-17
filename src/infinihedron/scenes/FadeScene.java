@@ -22,12 +22,10 @@ public class FadeScene extends Scene {
 	@Override
 	public void draw(DrawState drawState) {
 		float beatFraction = drawState.beatFraction;
-System.out.println("FadeScene.draw start: " + beatFraction);
 		// int mid = (int)(255 * beatFraction);
 		Color color = palette.getColor(beatFraction);
 		p.fill(color.getRGB());
 		p.rect(origin.x, origin.y, limit.x, limit.y);
-System.out.println("FadeScene.draw color: " + color.getRGB());
 	}
 	
 	@Override
@@ -36,7 +34,6 @@ System.out.println("FadeScene.draw color: " + color.getRGB());
 		// this.state = !this.state;
 
 		state = (state + 1) % 255;
-System.out.println("FadeScene.beat: " + state);
 	}
 
 	@Override

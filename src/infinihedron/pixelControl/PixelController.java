@@ -17,7 +17,7 @@ public class PixelController {
 	private static final int horizontalDivisions = 10;
 	private static final int pixelsPerChannel = 64;
 
-	private static final int stereographicRadius = 100;
+	private static final int stereographicRadius = 80;
 
 	private OPC opc;
 
@@ -30,11 +30,15 @@ public class PixelController {
 		opc = new OPC(processing, hostName, 7890);
 
 		opc.setPixelCount(512);
-		Point mid = new Point(400, 400);
+		Point max = new Point(processing.width / 2, processing.height);
+		Point mid = new Point(processing.width / 4, processing.height / 2);
 
 		for (Pixel p : pixels) {
 			Point real = p.add(mid);
-			//System.out.println(p.index + "\t" + real.x + "\t" + real.y);
+			System.out.println(p.index + "\t" + real.x + "\t" + real.y);
+			if (real.x > max.x || real.y > max.y || real.x < 0 || real.y < 0) {
+				throw new RuntimeException("Pixel off canvas: " + real.x + ", " + real.y);
+			}
 			opc.led(p.index, (int)real.x, (int)real.y);
 		}
 	}
