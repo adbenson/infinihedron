@@ -4,6 +4,7 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
+import infinihedron.control.BeatListener;
 import infinihedron.control.BeatRunner;
 import infinihedron.control.DrawState;
 import infinihedron.control.SceneType;
@@ -13,7 +14,7 @@ import infinihedron.palettes.PaletteType;
 import infinihedron.pixelControl.models.Point;
 import processing.core.PApplet;
 
-public abstract class Scene {
+public abstract class Scene implements BeatListener {
 	private final PaletteManager paletteManager = PaletteManager.getInstance();
 	
 	public final SceneType type;
@@ -37,16 +38,16 @@ public abstract class Scene {
 		this.origin = new Point(-processing.width / 4, -processing.height / 2);		
 	}
 	
-	public void draw(DrawState drawState) {};
+	public abstract void draw(DrawState drawState);
 	
-	public void beat(int interval, long time) {
+	@Override
+	public final void beat(int interval) {
 		this.beatInterval = interval;
-		this.lastBeat = time;
+		this.lastBeat = System.currentTimeMillis();
 		beat();
 	}
 
-	public void beat() {
-	}
+	public void beat() {}
 	
 	public void setPalette(Palette palette) {
 		this.palette = palette;

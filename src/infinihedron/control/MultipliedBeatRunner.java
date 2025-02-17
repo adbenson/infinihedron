@@ -42,13 +42,14 @@ public class MultipliedBeatRunner implements BeatListener {
 			loop.stop();
 		}
 
+		long time = System.currentTimeMillis();
 		this.interval = getMultipliedInterval(superInterval);
 
 		if (lastBeat == 0) {
-			lastBeat = System.currentTimeMillis();
+			lastBeat = time;
 		}
 
-		int timeSinceLastBeat = (int)(System.currentTimeMillis() - lastBeat);
+		int timeSinceLastBeat = (int)(time - lastBeat);
 
 		// Resynchronize the beats
 		int timeToNextBeat = superInterval < interval ? 
@@ -62,7 +63,7 @@ public class MultipliedBeatRunner implements BeatListener {
 				e.printStackTrace();
 			}
 			this.listener.beat(interval);
-			loop = new BeatLoop(interval, __ -> this.listener.beat(interval));
+			loop = new BeatLoop(interval, interval -> this.listener.beat(interval));
 		}).start();
 	}
 

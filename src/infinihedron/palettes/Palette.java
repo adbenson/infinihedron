@@ -14,7 +14,7 @@ import javax.swing.JComponent;
 public abstract class Palette extends JComponent {
 	
 	public static final int WIDTH = 256;
-	public static final int HEIGHT = 64;
+	public static final int HEIGHT = 32;
 
 	public static Random r = new Random();
 

@@ -29,10 +29,7 @@ public class FadeScene extends Scene {
 	}
 	
 	@Override
-	public void beat(int interval, long time) {
-		super.beat(interval, time);
-		// this.state = !this.state;
-
+	public void beat() {
 		state = (state + 1) % 255;
 	}
 

@@ -35,7 +35,6 @@ public class PixelController {
 
 		for (Pixel p : pixels) {
 			Point real = p.add(mid);
-			System.out.println(p.index + "\t" + real.x + "\t" + real.y);
 			if (real.x > max.x || real.y > max.y || real.x < 0 || real.y < 0) {
 				throw new RuntimeException("Pixel off canvas: " + real.x + ", " + real.y);
 			}

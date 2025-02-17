@@ -20,17 +20,12 @@ public class SceneManager implements BeatListener {
 	
 	private Scene scene;
 	private Palette palette;
-
-	private MultipliedBeatRunner beatRunner;
 	
 	public SceneManager(PApplet processing) {
 		scenes = new HashMap<SceneType, Scene>();
 		instantiateScenes(processing);
 		setSceneType(defaultSceneType);
 		setPaletteType(defaultPaletteType);
-		beatRunner = new MultipliedBeatRunner(interval -> {
-			getCurrentScene().beat(interval, System.currentTimeMillis());
-		});
 	}
 
 	private void instantiateScenes(PApplet processing) {
@@ -69,13 +64,9 @@ public class SceneManager implements BeatListener {
 		return scenes.get(type);
 	}
 
-	public void setMultiplier(int multiplier) {
-		beatRunner.setMultiplier(multiplier);
-	}
-
 	@Override
 	public void beat(int interval) {
-		beatRunner.beat(interval);
+		scene.beat(interval);
 	}
 	
 }
