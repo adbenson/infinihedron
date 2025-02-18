@@ -1,6 +1,6 @@
 # INFINIHEDRON
 
-The Infinihedron is a large 12-faced polygon (dodecahedron) wiht half-mirroed faces and LEDs lining the edges. When illuminated, this creates the effect of infinite lights in a kalidescopic pattern.
+The Infinihedron is a large 12-faced polygon (dodecahedron) with half-mirroed faces and LEDs lining the edges. When illuminated, this creates the effect of infinite lights in a kalidescopic pattern.
 
 [Here's a quick video of it in action](https://photos.app.goo.gl/cjdmcP2U8k5sayQv9), along with a glance at the software running it.
 [More photos and videos](https://photos.app.goo.gl/n18Prc7EzE4qecTB7)
@@ -12,7 +12,11 @@ It stands 480mm tall (nearly 19"), has 360 RGB LEDs and consumes around 100 watt
 Beyond looking cool, there were a few design goals for this project:
 
 * Individually addressable LEDs - Most projects like this just repeat the same led pattern on all edges, which is cool, but I wanted to make more 3-dimensional effects
-* Really good software support - I want to be able to play this thing like a DJ: Set a beat, choose an effect and a color palette, and then switch to other effects on the fly. Crucial to this is having software that makes it easy to create new effects and color palettes.
+* Really good software support - I want to be able to play this thing like a DJ: Set a beat, choose an effect and a color palette, and then switch to other effects on the fly. Essential sub-requirements:
+  	* Beat synchronization - eventually it would be great to do automatically, but that's it's own can of works. For now, make it easy to tap in the beat.
+  	* Simple effect creation - should be as easy as possible to design new effects on a 2D canvas, rather than coding for individual LEDs
+  	* 2-scene fade control - Two scenes run simultaneously, but independently and both synchronized to the beat. Switch between or blend them on the fly.
+  	* Separate color palettes - The scene and the colors should be independent but work together so any scene can apply any color palette.
 
 ## Design
 
