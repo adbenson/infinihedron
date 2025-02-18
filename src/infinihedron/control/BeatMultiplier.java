@@ -19,63 +19,72 @@ public class BeatMultiplier implements BeatListener {
 		
 	private volatile BeatLoop loop;
 
-	private int skipsPerBeat;
 	private volatile int skippedBeatCounter;
 
 	public BeatMultiplier(BeatListener listener) {
 		multiplier = 1;
 		lastBeat = 0;
-		skippedBeatCounter = 0;
+		skippedBeatCounter = -1;
 		this.listener = listener;
 	}
 
 	@Override
 	public synchronized void beat(int superInterval) {
 		this.lastSuperBeat = System.currentTimeMillis();
+		boolean isIntervalChanged = this.superInterval != superInterval;
 		this.superInterval = superInterval;
-		resync();
+
+		if (multiplier > 0) {
+			multiplyBeat();
+		} else {
+			divideBeat(isIntervalChanged);
+		}
 	}
 
 	public synchronized void setMultiplier(int multiplier) {
 		this.multiplier = multiplier;
-		resync();
-	}
-
-	private void resync() {
-		if (loop != null) {
-			loop.stop();
-		}
-
 		if (multiplier > 0) {
-			divideBeats();
+			stop();
 		} else {
-			multiplyBeats();
+			resetDividedBeat();
 		}
 	}
 
-	private void divideBeats() {
+	private void multiplyBeat() {
+		stop();
 		interval = superInterval / multiplier;
 		loop = new BeatLoop(interval, __ -> {
 			this.lastBeat = System.currentTimeMillis();
-			this.listener.beat(interval);
+			this.triggerBeat();
 		});
 	}
 
-	private void multiplyBeats() {
-		// TODO
-		this.listener.beat(superInterval);
+	private void resetDividedBeat() {
+		interval = superInterval * -multiplier;
+		skippedBeatCounter = -1;
+		this.triggerBeat();
 	}
 
-	private void sleep(long ms) {
-		if (ms <= 0) {
-			System.out.println("Negative sleep time: " + ms);
-			return;
+	private void divideBeat(boolean reset) {
+		if (reset) {
+			resetDividedBeat();
 		}
+		skippedBeatCounter++;
 
-		try {
-			Thread.sleep(Math.max(ms, 0));
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		if (skippedBeatCounter == -multiplier) {
+			this.triggerBeat();
+			skippedBeatCounter = 0;
+		}
+	}
+
+	private void triggerBeat() {
+		this.lastBeat = System.currentTimeMillis();
+		this.listener.beat(interval);
+	}
+
+	private void stop() {
+		if (loop != null) {
+			loop.stop();
 		}
 	}
 }
