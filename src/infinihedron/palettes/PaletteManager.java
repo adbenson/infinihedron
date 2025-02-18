@@ -21,6 +21,7 @@ public class PaletteManager {
 		instances.put(PaletteType.Rainbow, new RainbowPalette());
 		instances.put(PaletteType.Aesthetic, new Aesthetic());
 		instances.put(PaletteType.Strobe, new Strobe());
+		instances.put(PaletteType.Grayscale, new Grayscale());
 	}
 
 	public Palette get(PaletteType type) {

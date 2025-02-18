@@ -67,6 +67,10 @@ public abstract class Scene implements BeatListener {
 		setPalette(paletteManager.get(paletteType));
 	}
 
+	public void stop() {
+		beatMultiplier.stop();
+	}
+
 	protected float getBeatFraction() {
 		return (float)(System.currentTimeMillis() - lastBeat) / beatInterval;
 	}

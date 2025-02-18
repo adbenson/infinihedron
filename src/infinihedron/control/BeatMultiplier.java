@@ -50,6 +50,12 @@ public class BeatMultiplier implements BeatListener {
 		}
 	}
 
+	public void stop() {
+		if (loop != null) {
+			loop.stop();
+		}
+	}
+
 	private void multiplyBeat() {
 		stop();
 		interval = superInterval / multiplier;
@@ -80,11 +86,5 @@ public class BeatMultiplier implements BeatListener {
 	private void triggerBeat() {
 		this.lastBeat = System.currentTimeMillis();
 		this.listener.beat(interval);
-	}
-
-	private void stop() {
-		if (loop != null) {
-			loop.stop();
-		}
 	}
 }

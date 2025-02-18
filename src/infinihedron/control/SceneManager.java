@@ -52,7 +52,11 @@ public class SceneManager implements BeatListener {
 	}
 	
 	public void setSceneType(SceneType type) {
+		if (this.scene != null) {
+			this.scene.stop();
+		}
 		this.scene = scenes.get(type);
+		this.scene.setPalette(palette);
 	}
 
 	public void setPaletteType(PaletteType type) {
