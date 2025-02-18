@@ -18,7 +18,7 @@ public class BeatLoop {
 	}
 
 	public synchronized void stop() {
-		if (!this.isStopped) {
+		if (this.isStopped) {	
 			System.out.println("Stopped beat stopped again.");
 		}
 		this.isStopped = true;

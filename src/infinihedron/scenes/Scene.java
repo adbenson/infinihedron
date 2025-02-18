@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import infinihedron.control.BeatListener;
 import infinihedron.control.BeatMultiplier;
 import infinihedron.control.BeatRunner;
-import infinihedron.control.DrawState;
 import infinihedron.control.SceneType;
 import infinihedron.palettes.Palette;
 import infinihedron.palettes.PaletteManager;
@@ -24,7 +23,6 @@ public abstract class Scene implements BeatListener {
 	protected Palette palette = paletteManager.get(PaletteType.Blank);
 
 	protected long lastBeat = 0;
-	protected int superInterval = BeatRunner.DEFAULT_INTERVAL;
 	protected int beatInterval = BeatRunner.DEFAULT_INTERVAL;
 
 	protected Random random;
@@ -32,24 +30,27 @@ public abstract class Scene implements BeatListener {
 	protected Point origin;
 	protected Point limit;
 
-	protected BeatMultiplier beatRunner;
-	protected DrawState drawState;
+	protected BeatMultiplier beatMultiplier;
 	
 	Scene(PApplet processing, SceneType type) {
 		this.p = processing;
 		this.type = type;
 		this.random = new Random();
 		this.limit = new Point(processing.width / 2, processing.height);
-		this.origin = new Point(-processing.width / 4, -processing.height / 2);		
+		this.origin = new Point(-processing.width / 4, -processing.height / 2);	
+		this.lastBeat = System.currentTimeMillis();
+		beatMultiplier = new BeatMultiplier(i -> subBeat(i));
 	}
 	
 	public abstract void draw();
 	
+	/**
+	 * Called by the master beat runner
+	 * Passes it on to the beat multiplier
+	 */
 	@Override
 	public final void beat(int interval) {
-		this.beatInterval = interval;
-		this.lastBeat = System.currentTimeMillis();
-		beat();
+		beatMultiplier.beat(interval);
 	}
 
 	public void beat() {}
@@ -64,6 +65,25 @@ public abstract class Scene implements BeatListener {
 
 	public void setPaletteType(PaletteType paletteType) {
 		setPalette(paletteManager.get(paletteType));
+	}
+
+	protected float getBeatFraction() {
+		return (float)(System.currentTimeMillis() - lastBeat) / beatInterval;
+	}
+
+	protected void setBeatMultiplier(int multiplier) {
+		beatMultiplier.setMultiplier(multiplier);
+	}
+
+	/**
+	 * Called by beat multiplier
+	 * Calls child class beat method
+	 * @param interval
+	 */
+	private void subBeat(int interval) {
+		lastBeat = System.currentTimeMillis();
+		beatInterval = interval;
+		beat();
 	}
 
 }

@@ -2,69 +2,80 @@ package infinihedron.control;
 
 public class BeatMultiplier implements BeatListener {
 
+	public static final int[] MULTIPLIER_FACTORS = new int[] {
+		-8, -6, -4, -3, -2, 1, 2, 3, 4, 6, 8
+	};
+
+	private final int LEAST_COMMON_MULTIPLE = 24;
+
 	private int multiplier;
+
 	private int superInterval;
+	private long lastSuperBeat;
 	private int interval;
+	private volatile long lastBeat;
+
 	private BeatListener listener;
-	private long lastBeat;
-	private BeatLoop loop;
+		
+	private volatile BeatLoop loop;
+
+	private int skipsPerBeat;
+	private volatile int skippedBeatCounter;
 
 	public BeatMultiplier(BeatListener listener) {
 		multiplier = 1;
-		interval = 0;
 		lastBeat = 0;
+		skippedBeatCounter = 0;
 		this.listener = listener;
 	}
 
 	@Override
-	public void beat(int superInterval) {
-		listener.beat(interval);
-		// this.lastBeat = System.currentTimeMillis();
-		// this.superInterval = superInterval;
-		// restart();
+	public synchronized void beat(int superInterval) {
+		this.lastSuperBeat = System.currentTimeMillis();
+		this.superInterval = superInterval;
+		resync();
 	}
 
-	public void setMultiplier(int multiplier) {
+	public synchronized void setMultiplier(int multiplier) {
 		this.multiplier = multiplier;
-		restart();
+		resync();
 	}
 
-	private int getMultipliedInterval(int superInterval) {
-		if (multiplier > 0) {
-			return superInterval / multiplier;
-		} else {
-			return superInterval * -multiplier;
-		}
-	}
-
-	private void restart() {
+	private void resync() {
 		if (loop != null) {
 			loop.stop();
 		}
 
-		long time = System.currentTimeMillis();
-		this.interval = getMultipliedInterval(superInterval);
-
-		if (lastBeat == 0) {
-			lastBeat = time;
+		if (multiplier > 0) {
+			divideBeats();
+		} else {
+			multiplyBeats();
 		}
-
-		int timeSinceLastBeat = (int)(time - lastBeat);
-
-		// Resynchronize the beats
-		int timeToNextBeat = superInterval < interval ? 
-			timeSinceLastBeat % interval :
-			interval - timeSinceLastBeat;
-
-		new Thread(() -> {
-			try {
-				Thread.sleep(timeToNextBeat);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			this.listener.beat(interval);
-			loop = new BeatLoop(interval, interval -> this.listener.beat(interval));
-		}).start();
 	}
 
+	private void divideBeats() {
+		interval = superInterval / multiplier;
+		loop = new BeatLoop(interval, __ -> {
+			this.lastBeat = System.currentTimeMillis();
+			this.listener.beat(interval);
+		});
+	}
+
+	private void multiplyBeats() {
+		// TODO
+		this.listener.beat(superInterval);
+	}
+
+	private void sleep(long ms) {
+		if (ms <= 0) {
+			System.out.println("Negative sleep time: " + ms);
+			return;
+		}
+
+		try {
+			Thread.sleep(Math.max(ms, 0));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }

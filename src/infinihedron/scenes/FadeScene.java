@@ -2,10 +2,10 @@ package infinihedron.scenes;
 
 import java.awt.Color;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import infinihedron.control.SceneType;
+import infinihedron.ui.MultiplierSlider;
 import processing.core.PApplet;
 
 public class FadeScene extends Scene {
@@ -20,7 +20,7 @@ public class FadeScene extends Scene {
 
 	@Override
 	public void draw() {
-		float beatFraction = drawState.beatFraction;
+		float beatFraction = getBeatFraction();
 		// int mid = (int)(255 * beatFraction);
 		Color color = palette.getColor(beatFraction);
 		p.fill(color.getRGB());
@@ -35,7 +35,7 @@ public class FadeScene extends Scene {
 	@Override
 	public JPanel getControls() {
 		JPanel panel = new JPanel();
-		panel.add(new JLabel("Fade Scene Controls"));
+		panel.add(new MultiplierSlider(m -> setBeatMultiplier(m)));
 		return panel;
 	}
 
