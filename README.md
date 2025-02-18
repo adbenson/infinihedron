@@ -13,7 +13,7 @@ Beyond looking cool, there were a few design goals for this project:
 
 * Individually addressable LEDs - Most projects like this just repeat the same led pattern on all edges, which is cool, but I wanted to make more 3-dimensional effects
 * Really good software support - I want to be able to play this thing like a DJ: Set a beat, choose an effect and a color palette, and then switch to other effects on the fly. Essential sub-requirements:
-  	* Beat synchronization - eventually it would be great to do automatically, but that's it's own can of works. For now, make it easy to tap in the beat.
+  	* Beat synchronization - eventually it would be great to do automatically, but that's it's own can of worms. For now, make it easy to tap in the beat. At the same time, each effect should be able to speed up or slow down relative to the beat while keeping in sync.
   	* Simple effect creation - should be as easy as possible to design new effects on a 2D canvas, rather than coding for individual LEDs
   	* 2-scene fade control - Two scenes run simultaneously, but independently and both synchronized to the beat. Switch between or blend them on the fly.
   	* Separate color palettes - The scene and the colors should be independent but work together so any scene can apply any color palette.
