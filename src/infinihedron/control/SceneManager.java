@@ -10,9 +10,6 @@ import infinihedron.scenes.Scene;
 import processing.core.PApplet;
 
 public class SceneManager implements BeatListener {
-
-	public static final SceneType defaultSceneType = SceneType.Fade;
-	public static final PaletteType defaultPaletteType = PaletteType.Rainbow;
 	
 	private final PaletteManager paletteManager = PaletteManager.getInstance();
 
@@ -24,8 +21,8 @@ public class SceneManager implements BeatListener {
 	public SceneManager(PApplet processing) {
 		scenes = new HashMap<SceneType, Scene>();
 		instantiateScenes(processing);
-		setSceneType(defaultSceneType);
-		setPaletteType(defaultPaletteType);
+		setSceneType(SceneType.DEFAULT_SCENE);
+		setPaletteType(PaletteType.DEFAULT_PALETTE);
 	}
 
 	private void instantiateScenes(PApplet processing) {

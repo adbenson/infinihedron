@@ -6,5 +6,7 @@ public enum PaletteType {
 	Rainbow,
 	Aesthetic,
 	Strobe,
-	Grayscale,
+	Grayscale;
+
+	public static final PaletteType DEFAULT_PALETTE = Rainbow;
 }

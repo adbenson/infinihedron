@@ -56,10 +56,6 @@ public class RingsScene extends Scene {
 		addOrRemoveRing(ring, true);
 	}
 
-	void end(Ring ring) {
-		addOrRemoveRing(ring, false);
-	}
-
 	private synchronized void addOrRemoveRing(Ring ring, boolean add) {
 		toChange.put(ring, add);
 	}
@@ -110,7 +106,7 @@ public class RingsScene extends Scene {
 				if (r > 0) {
 					float brightness = (float)(bands - n) / bands;
 
-					int c = p.color(hue.getRed(), hue.getGreen(), hue.getBlue(), brightness * 255);
+					int c = adjustAlpha(hue, brightness);
 					p.stroke(c);
 					p.circle(0, 0, r);
 				}

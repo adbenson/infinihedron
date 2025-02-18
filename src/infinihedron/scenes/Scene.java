@@ -1,5 +1,6 @@
 package infinihedron.scenes;
 
+import java.awt.Color;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -25,19 +26,23 @@ public abstract class Scene implements BeatListener {
 	protected long lastBeat = 0;
 	protected int beatInterval = BeatRunner.DEFAULT_INTERVAL;
 
-	protected Random random;
+	protected final Random random;
 
-	protected Point origin;
-	protected Point limit;
+	protected final Point origin;
+	protected final Point limit;
+	protected final Point size;
 
-	protected BeatMultiplier beatMultiplier;
+	protected final BeatMultiplier beatMultiplier;
 	
 	Scene(PApplet processing, SceneType type) {
 		this.p = processing;
 		this.type = type;
 		this.random = new Random();
-		this.limit = new Point(processing.width / 2, processing.height);
-		this.origin = new Point(-processing.width / 4, -processing.height / 2);	
+		
+		this.size = new Point(processing.width / 2, processing.height);
+		this.limit = new Point(size.x / 2, size.y / 2);
+		this.origin = new Point(-limit.x, -limit.y);
+
 		this.lastBeat = System.currentTimeMillis();
 		beatMultiplier = new BeatMultiplier(i -> subBeat(i));
 	}
@@ -77,6 +82,18 @@ public abstract class Scene implements BeatListener {
 
 	protected void setBeatMultiplier(int multiplier) {
 		beatMultiplier.setMultiplier(multiplier);
+	}
+
+	protected int adjustAlpha(Color hue, float alpha) {
+		return p.color(hue.getRed(), hue.getGreen(), hue.getBlue(), alpha * 255);
+	}
+
+	protected int randomBetween(int min, int max) {
+		return random.nextInt(max - min) + min;
+	}
+
+	protected float randomBetween(float min, float max) {
+		return random.nextFloat() * (max - min) + min;
 	}
 
 	/**

@@ -34,6 +34,9 @@ public class SceneControlPanel extends JPanel {
 		super();
 		this.manager = manager;
 		populate();
+
+		sceneSelected(SceneType.DEFAULT_SCENE);
+		manager.setPaletteType(PaletteType.DEFAULT_PALETTE);
 	}
 
 	private void populate() {
@@ -46,6 +49,8 @@ public class SceneControlPanel extends JPanel {
 	private JPanel sceneSelector() {
 		JPanel panel = new JPanel();
 		JComboBox<SceneType> combo = new JComboBox<>(SceneType.values());
+
+		combo.setSelectedItem(SceneType.DEFAULT_SCENE);
 		
 		combo.addActionListener(e -> sceneSelected((SceneType)combo.getSelectedItem()));
 
@@ -66,6 +71,8 @@ public class SceneControlPanel extends JPanel {
 
 		PaletteRenderer renderer = new PaletteRenderer();
 		combo.setRenderer(renderer);
+
+		combo.setSelectedItem(PaletteType.DEFAULT_PALETTE);
 
 		combo.addActionListener(l -> {
 			PaletteType type = (PaletteType)combo.getSelectedItem();

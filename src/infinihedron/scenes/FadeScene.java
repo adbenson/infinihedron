@@ -24,7 +24,7 @@ public class FadeScene extends Scene {
 		// int mid = (int)(255 * beatFraction);
 		Color color = palette.getColor(beatFraction);
 		p.fill(color.getRGB());
-		p.rect(origin.x, origin.y, limit.x, limit.y);
+		p.rect(origin.x, origin.y, size.x, size.y);
 	}
 	
 	@Override

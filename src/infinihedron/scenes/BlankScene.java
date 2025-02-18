@@ -15,7 +15,7 @@ public class BlankScene extends Scene {
 	@Override
 	public void draw() {
 		p.fill(0);
-		p.rect(0, 0, p.height, p.width);
+		p.rect(origin.x, origin.y, size.x, size.y);
 	}
 
 	@Override
