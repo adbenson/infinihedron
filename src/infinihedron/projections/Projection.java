@@ -5,8 +5,13 @@ import java.util.List;
 
 import infinihedron.pixelControl.models.Pixel;
 import infinihedron.pixelControl.models.Point;
+import infinihedron.pixelControl.models.SegmentLine;
 
 public abstract class Projection {
+
+	public abstract List<Pixel> getPixels();
+
+	public abstract List<SegmentLine> getSegments();
 
 	protected static List<Pixel> pixelSegment(Point start, Point end, int startIndex, int pixelsPerEdge) {
 		List<Pixel> pixels = new ArrayList<>(); 
@@ -36,7 +41,7 @@ public abstract class Projection {
 		return pointOnLine(start, end, numerator / divisor);
 	}
 
-	protected static Point pointOnLine(Point start, Point end, float distance) {
+	public static Point pointOnLine(Point start, Point end, float distance) {
 		float xOffset = distance * (end.x - start.x);
 		float yOffset = distance * (end.y - start.y);
 		float zOffset = distance * (end.z - start.z);

@@ -4,14 +4,14 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
+import infinihedron.Infinihedron;
 import infinihedron.control.SceneType;
 import infinihedron.ui.MultiplierSlider;
-import processing.core.PApplet;
 
 public class FadeScene extends Scene {
 	
-	public FadeScene(PApplet processing) {
-		super(processing, SceneType.Fade);
+	public FadeScene(Infinihedron infinihedron) {
+		super(infinihedron, SceneType.Fade);
 	}
 
 	// private boolean state = true;

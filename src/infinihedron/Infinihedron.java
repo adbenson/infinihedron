@@ -6,6 +6,8 @@ import infinihedron.control.BeatRunner;
 import infinihedron.control.SceneManager;
 import infinihedron.palettes.PaletteType;
 import infinihedron.pixelControl.PixelController;
+import infinihedron.projections.Projection;
+import infinihedron.projections.StereographicProjection;
 import infinihedron.ui.InfinihedronControlPanel;
 import processing.core.PApplet;
 
@@ -23,6 +25,8 @@ public class Infinihedron extends PApplet {
 	private BeatRunner beatRunner;
 
 	private PixelController pixels;
+
+	private Projection projection;
 
 	public static void main(String[] args) {
 		// The argument passed to main must match the class name
@@ -43,13 +47,15 @@ public class Infinihedron extends PApplet {
 
 		beatRunner = new BeatRunner();
 
+		projection = new StereographicProjection();
+
+		pixels = new PixelController(this, "localhost", projection.getPixels());
+
 		sceneA = new SceneManager(this);
 		sceneB = new SceneManager(this);
 
 		beatRunner.addListener(sceneA);
 		beatRunner.addListener(sceneB);
-
-		pixels = new PixelController(this, "localhost");
 
 		InfinihedronControlPanel.launch(
 			sceneA,
@@ -58,6 +64,10 @@ public class Infinihedron extends PApplet {
 			f -> pixels.setFade(f),
 			__ -> quit()
 		);
+	}
+
+	public Projection getProjection() {
+		return projection;
 	}
 
 	private void quit() {

@@ -1,31 +1,16 @@
 package infinihedron.pixelControl;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import infinihedron.pixelControl.models.Pixel;
 import infinihedron.pixelControl.models.Point;
-import infinihedron.pixelControl.models.Segment;
-import infinihedron.projections.MapReader;
-import infinihedron.projections.StereographicProjection;
 import processing.core.PApplet;
 
 public class PixelController {
 
-	private static final int pixelsPerEdge = 12;
-	private static final int horizontalDivisions = 10;
-	private static final int pixelsPerChannel = 64;
+	private final OPC opc;
 
-	private static final int stereographicRadius = 80;
-
-	private OPC opc;
-
-	private List<Pixel> pixels;
-
-	public PixelController(PApplet processing, String hostName) {
-		List<Segment> segments = loadSegments("stereographicSegmentMap.json");
-		pixels = getPixels(segments);
+	public PixelController(PApplet processing, String hostName, List<Pixel> pixels) {
 
 		opc = new OPC(processing, hostName, 7890);
 
@@ -46,22 +31,4 @@ public class PixelController {
 		this.opc.setFade(fade);
 	}
 
-	private List<Pixel> getPixels(List<Segment> segments) {
-		return StereographicProjection.generatePixels(
-			segments,
-			stereographicRadius,
-			horizontalDivisions,
-			pixelsPerEdge,
-			pixelsPerChannel
-		);
-	}
-
-	private List<Segment> loadSegments(String file) {
-		try {
-			return MapReader.get(file).stream().collect(Collectors.toList());
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-	}
 }

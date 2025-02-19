@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import infinihedron.Infinihedron;
 import infinihedron.control.SceneType;
-import processing.core.PApplet;
 
 public class RingsScene extends Scene {
 
@@ -18,9 +18,9 @@ public class RingsScene extends Scene {
 
 	private Map<Ring, Boolean> toChange = new HashMap<>();
 
-	public RingsScene(PApplet processing) {
-		super(processing, SceneType.Rings);
-		maxRadius = (int)(p.height * 1.5);
+	public RingsScene(Infinihedron infinihedron) {
+		super(infinihedron, SceneType.Rings);
+		maxRadius = (int)(p.height * 1);
 		nextRingTime = 0;
 	}
 

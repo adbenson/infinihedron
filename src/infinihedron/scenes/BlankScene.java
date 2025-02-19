@@ -3,13 +3,13 @@ package infinihedron.scenes;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import infinihedron.Infinihedron;
 import infinihedron.control.SceneType;
-import processing.core.PApplet;
 
 public class BlankScene extends Scene {
 
-	public BlankScene(PApplet processing) {
-		super(processing, SceneType.Blank);
+	public BlankScene(Infinihedron infinihedron) {
+		super(infinihedron, SceneType.Blank);
 	}
 	
 	@Override

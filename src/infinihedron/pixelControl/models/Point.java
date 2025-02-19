@@ -43,4 +43,23 @@ public class Point {
 	private PVector copy() {
 		return this.v.copy();
 	}
+
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (!(o instanceof Point)) {
+			return false;
+		}
+		Point p = (Point) o;
+		return p.x == x && p.y == y && p.z == z;
+	}
+
+	public int hashCode() {
+		return (int)(x * 1000 + y * 100 + z);
+	}
+
+	public String toString() {
+		return "Point(" + x + ", " + y + ", " + z + ")";
+	}
 }

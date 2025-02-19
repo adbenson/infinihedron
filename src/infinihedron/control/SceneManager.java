@@ -3,11 +3,11 @@ package infinihedron.control;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
+import infinihedron.Infinihedron;
 import infinihedron.palettes.Palette;
 import infinihedron.palettes.PaletteManager;
 import infinihedron.palettes.PaletteType;
 import infinihedron.scenes.Scene;
-import processing.core.PApplet;
 
 public class SceneManager implements BeatListener {
 	
@@ -18,29 +18,30 @@ public class SceneManager implements BeatListener {
 	private Scene scene;
 	private Palette palette;
 	
-	public SceneManager(PApplet processing) {
+	public SceneManager(Infinihedron infinihedron) {
 		scenes = new HashMap<SceneType, Scene>();
-		instantiateScenes(processing);
+		instantiateScenes(infinihedron);
 		setSceneType(SceneType.DEFAULT_SCENE);
 		setPaletteType(PaletteType.DEFAULT_PALETTE);
 	}
 
-	private void instantiateScenes(PApplet processing) {
+	private void instantiateScenes(Infinihedron infinihedron) {
 		for (SceneType type : SceneType.values()) {
 			try {
-				Scene scene = instantiateScene(type, processing);
+				Scene scene = instantiateScene(type, infinihedron);
 				scene.setPalette(palette);
 				scenes.put(type, scene);
 			} catch (Exception e) {
+				System.out.println("Failed to instantiate scene: " + type);
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private Scene instantiateScene(SceneType type, PApplet processing) throws Exception {
+	private Scene instantiateScene(SceneType type, Infinihedron infinihedron) throws Exception {
 		Class<? extends Scene> clazz = type.clazz;
-		Constructor<? extends Scene> ctor = clazz.getConstructor(new Class[] { PApplet.class });
-		Scene instance = ctor.newInstance(processing);
+		Constructor<? extends Scene> ctor = clazz.getConstructor(new Class[] { Infinihedron.class });
+		Scene instance = ctor.newInstance(infinihedron);
 		return instance;
 	}
 	

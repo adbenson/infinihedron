@@ -23,7 +23,7 @@ public class SpriteManager<SpriteType extends Sprite> {
 	private final float birthFactor;
 	private final SpriteCreator<SpriteType> creator;
 
-	private int beatsSinceLastBirth = 0;
+	private int beatsSinceLastBirth;
 
 	public SpriteManager(int minAge, int maxAge, int minBirthInterval, int maxBirthInterval, SpriteCreator<SpriteType> creator) {
 		this.minAge = minAge;
@@ -32,6 +32,7 @@ public class SpriteManager<SpriteType extends Sprite> {
 		this.maxBirthInterval = maxBirthInterval;
 		this.birthFactor = 1.0f / (maxBirthInterval - minBirthInterval);
 		this.creator = creator;
+		beatsSinceLastBirth = minBirthInterval;
 	}
 
 	public void draw() {
@@ -90,6 +91,5 @@ public class SpriteManager<SpriteType extends Sprite> {
 		public void beat() {}
 		public abstract void  draw();
 	}
-	
 
 }
