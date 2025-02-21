@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import infinihedron.Infinihedron;
-import infinihedron.control.SceneType;
+import infinihedron.projections.Projection;
 
 public class RingsScene extends Scene {
 
@@ -18,8 +18,8 @@ public class RingsScene extends Scene {
 
 	private Map<Ring, Boolean> toChange = new HashMap<>();
 
-	public RingsScene(Infinihedron infinihedron) {
-		super(infinihedron, SceneType.Rings);
+	public RingsScene(Infinihedron infinihedron, Projection projection) {
+		super(infinihedron, projection);
 		maxRadius = (int)(p.height * 1);
 		nextRingTime = 0;
 	}

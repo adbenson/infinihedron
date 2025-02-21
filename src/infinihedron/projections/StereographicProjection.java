@@ -25,8 +25,9 @@ public class StereographicProjection extends Projection {
 
 	public StereographicProjection() {
 		List<Segment> baseSegments = loadSegments("stereographicSegmentMap.json");
-		segments = StereographicProjection.generateSegmentLines(baseSegments, stereographicRadius, horizontalDivisions);
-		pixels = StereographicProjection.generatePixels(segments, pixelsPerEdge, pixelsPerChannel);
+		segments = generateSegmentLines(baseSegments, stereographicRadius, horizontalDivisions);
+		pixels = generatePixels(segments, pixelsPerEdge, pixelsPerChannel);
+
 	}
 	
 	@Override
@@ -39,7 +40,7 @@ public class StereographicProjection extends Projection {
 		return segments;
 	}
 
-	private static List<SegmentLine> generateSegmentLines(
+	private List<SegmentLine> generateSegmentLines(
 		List<Segment> segments,
 		int layerRadius,
 		int horizontalDivisions
@@ -56,7 +57,7 @@ public class StereographicProjection extends Projection {
 		return lines;
 	}
 
-	private static List<Pixel> generatePixels(
+	private List<Pixel> generatePixels(
 		List<SegmentLine> segments,
 		int pixelsPerEdge,
 		int pixelsPerChannel
@@ -75,7 +76,7 @@ public class StereographicProjection extends Projection {
 		return pixels;
 	}
 
-	private static List<Segment> loadSegments(String file) {
+	private List<Segment> loadSegments(String file) {
 		try {
 			return MapReader.get(file).stream().collect(Collectors.toList());
 		} catch (IOException e) {
@@ -84,13 +85,13 @@ public class StereographicProjection extends Projection {
 		}
 	}
 
-	private static Point stereographicVertexPoint(Vertex v, int layerRadius, int divisions) {
+	private Point stereographicVertexPoint(Vertex v, int layerRadius, int divisions) {
 		int r = (int)layerRadius(v.layer, layerRadius);
 		float angle = (float)(v.longitude * ((Math.PI * 2) / divisions));
 		return pointOnCircle(r, -angle);
 	}
 
-	private static float layerRadius(Layer layer, int layerRadius) {
+	private float layerRadius(Layer layer, int layerRadius) {
 		// These values were determined largely experimentally to minimize the difference
 		// in percieved edge length. I tried to find a mathematical solution but ugh.
 		return 
@@ -103,12 +104,25 @@ public class StereographicProjection extends Projection {
 		);
 	}
 
-	private static Point pointOnCircle(float r, float angle) {
+	private Point pointOnCircle(float r, float angle) {
 		angle += Math.PI;
 		return new Point(
 			r * Math.sin(angle),
 			r * Math.cos(angle)
 		);
+	}
+
+	@Override
+	public int[] getPixelValues(int[] displayedPixels, int offset) {
+		for (Pixel pixel : pixels) {
+			int positionIndex = pixel.positionIndex + offset;
+			pixelValues[pixel.outputIndex] = displayedPixels[positionIndex];
+
+			// Ligten the pixel in the display so we can see it on screen
+			displayedPixels[positionIndex] = 0xFFFFFF ^ displayedPixels[positionIndex];
+		}
+
+		return pixelValues;
 	}
 
 }

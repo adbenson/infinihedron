@@ -1,13 +1,10 @@
 package infinihedron;
 
-import java.awt.Point;
-
 import infinihedron.control.BeatRunner;
 import infinihedron.control.SceneManager;
 import infinihedron.palettes.PaletteType;
 import infinihedron.pixelControl.PixelController;
-import infinihedron.projections.Projection;
-import infinihedron.projections.StereographicProjection;
+import infinihedron.pixelControl.models.Point;
 import infinihedron.ui.InfinihedronControlPanel;
 import processing.core.PApplet;
 
@@ -16,8 +13,9 @@ public class Infinihedron extends PApplet {
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 600;
 
-	public static final Point midPointA = new Point(WIDTH / 4, HEIGHT / 2);
-	public static final Point midPointB = new Point(WIDTH * 3 / 4, HEIGHT / 2);
+	public static final Point MID_POINT_A = new Point(WIDTH / 4, HEIGHT / 2);
+	public static final Point MID_POINT_B = new Point(WIDTH * 3 / 4, HEIGHT / 2);
+	public static final Point LIMIT_POINT = new Point(WIDTH / 2, HEIGHT);
 
 	private SceneManager sceneA;
 	private SceneManager sceneB;
@@ -25,8 +23,6 @@ public class Infinihedron extends PApplet {
 	private BeatRunner beatRunner;
 
 	private PixelController pixels;
-
-	private Projection projection;
 
 	public static void main(String[] args) {
 		// The argument passed to main must match the class name
@@ -47,12 +43,10 @@ public class Infinihedron extends PApplet {
 
 		beatRunner = new BeatRunner();
 
-		projection = new StereographicProjection();
-
-		pixels = new PixelController(this, "localhost", projection.getPixels());
-
 		sceneA = new SceneManager(this);
 		sceneB = new SceneManager(this);
+
+		pixels = new PixelController(this, "localhost", sceneA, sceneB);
 
 		beatRunner.addListener(sceneA);
 		beatRunner.addListener(sceneB);
@@ -64,10 +58,6 @@ public class Infinihedron extends PApplet {
 			f -> pixels.setFade(f),
 			__ -> quit()
 		);
-	}
-
-	public Projection getProjection() {
-		return projection;
 	}
 
 	private void quit() {
@@ -82,10 +72,10 @@ public class Infinihedron extends PApplet {
 		fill(0);
 		rect(0, 0, width, height);
 
-		translate(midPointA.x, midPointA.y);
+		translate(MID_POINT_A.x, MID_POINT_A.y);
 		sceneA.getCurrentScene().draw();
 
-		translate(midPointB.x - midPointA.x, 0);
+		translate(MID_POINT_B.x - MID_POINT_A.x, 0);
 		sceneB.getCurrentScene().draw();
 	}
 

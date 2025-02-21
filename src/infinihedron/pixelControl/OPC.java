@@ -12,112 +12,30 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.util.Arrays;
-
-import processing.core.PApplet;
 
 public class OPC implements Runnable {
-	PApplet p;
-	Thread thread;
-	Socket socket;
-	OutputStream output, pending;
-	String host;
-	int port;
+	public static final int FIRST_PIXEL_OFFSET = 4;
+	public static final int BYTES_PER_PIXEL = 3;
 
-	int[] pixelLocations;
-	int rightOffset;
-	byte[] packetData;
-	byte firmwareConfig;
-	String colorCorrection;
-	boolean enableShowLocations;
+	private Thread thread;
+	private Socket socket;
+	private OutputStream output, pending;
+	private String host;
+	private int port;
 
-	private float fade;
+	private byte[] packetData;
+	private byte firmwareConfig;
+	private String colorCorrection;
 
-	public OPC(PApplet parent, String host, int port) {
-		this.p = parent;
+	public OPC(String host, int port) {
 		this.host = host;
 		this.port = port;
-		this.fade = 0.0f;
 		thread = new Thread(this);
 		thread.start();
-		this.enableShowLocations = true;
-		parent.registerMethod("draw", this);
-	}
-
-	public void setFade(float fade) {
-		this.fade = fade;
 	}
 
 	public boolean isConnected() {
 		return output != null;
-	}
-
-	// Set the location of a single LED
-	public void led(int index, int x, int y) {
-		// For convenience, automatically grow the pixelLocations array. We do want this
-		// to be an array,
-		// instead of a HashMap, to keep draw() as fast as it can be.
-		if (pixelLocations == null) {
-			pixelLocations = new int[index + 1];
-			rightOffset = p.width / 2;
-		} else if (index >= pixelLocations.length) {
-			pixelLocations = Arrays.copyOf(pixelLocations, index + 1);
-		}
-
-		pixelLocations[index] = x + p.width * y;
-	}
-
-	// Set the location of several LEDs arranged in a strip.
-	// Angle is in radians, measured clockwise from +X.
-	// (x,y) is the center of the strip.
-	public void ledStrip(int index, int count, float x, float y, float spacing, float angle, boolean reversed) {
-		float s = PApplet.sin(angle);
-		float c = PApplet.cos(angle);
-		for (int i = 0; i < count; i++) {
-			led(reversed ? (index + count - 1 - i) : (index + i),
-					(int) (x + (i - (count - 1) / 2.0) * spacing * c + 0.5),
-					(int) (y + (i - (count - 1) / 2.0) * spacing * s + 0.5));
-		}
-	}
-
-	// Set the locations of a ring of LEDs. The center of the ring is at (x, y),
-	// with "radius" pixels between the center and each LED. The first LED is at
-	// the indicated angle, in radians, measured clockwise from +X.
-	public void ledRing(int index, int count, float x, float y, float radius, float angle) {
-		for (int i = 0; i < count; i++) {
-			float a = angle + i * 2 * PApplet.PI / count;
-			led(index + i, (int) (x - radius * PApplet.cos(a) + 0.5), (int) (y - radius * PApplet.sin(a) + 0.5));
-		}
-	}
-
-	// Set the location of several LEDs arranged in a grid. The first strip is
-	// at 'angle', measured in radians clockwise from +X.
-	// (x,y) is the center of the grid.
-	public void ledGrid(int index, int stripLength, int numStrips, float x, float y, float ledSpacing, float stripSpacing,
-			float angle, boolean zigzag, boolean flip) {
-		float s = PApplet.sin(angle + PApplet.HALF_PI);
-		float c = PApplet.cos(angle + PApplet.HALF_PI);
-		for (int i = 0; i < numStrips; i++) {
-			ledStrip(index + stripLength * i, stripLength, x + (i - (numStrips - 1) / 2.0f) * stripSpacing * c,
-					y + (i - (numStrips - 1) / 2.0f) * stripSpacing * s, ledSpacing, angle,
-					zigzag && ((i % 2) == 1) != flip);
-		}
-	}
-
-	// Set the location of 64 LEDs arranged in a uniform 8x8 grid.
-	// (x,y) is the center of the grid.
-	public void ledGrid8x8(int index, float x, float y, float spacing, float angle, boolean zigzag, boolean flip) {
-		ledGrid(index, 8, 8, x, y, spacing, spacing, angle, zigzag, flip);
-	}
-
-	// Should the pixel sampling locations be visible? This helps with debugging.
-	// Showing locations is enabled by default. You might need to disable it if our
-	// drawing
-	// is interfering with your processing sketch, or if you'd simply like the
-	// screen to be
-	// less cluttered.
-	public void showLocations(boolean enabled) {
-		enableShowLocations = enabled;
 	}
 
 	// Enable or disable dithering. Dithering avoids the "stair-stepping" artifact
@@ -233,54 +151,6 @@ public class OPC implements Runnable {
 		}
 	}
 
-	// Automatically called at the end of each draw().
-	// This handles the automatic Pixel to LED mapping.
-	// If you aren't using that mapping, this function has no effect.
-	// In that case, you can call setPixelCount(), setPixel(), and writePixels()
-	// separately.
-	public void draw() {
-		if (pixelLocations == null) {
-			// No pixels defined yet
-			return;
-		}
-		if (output == null) {
-			return;
-		}
-
-		int numPixels = pixelLocations.length;
-		int ledAddress = 4;
-
-		setPixelCount(numPixels);
-		p.loadPixels();
-
-		for (int i = 0; i < numPixels; i++) {
-			int pixelLocation = pixelLocations[i];
-			int pixelLeft = p.pixels[pixelLocation];
-			int pixelRight = p.pixels[pixelLocation + rightOffset];
-
-			byte r = (byte) (((pixelLeft >> 16) & 0xFF) * (1 - fade) + ((pixelRight >> 16) & 0xFF) * fade);
-			byte g = (byte) (((pixelLeft >> 8) & 0xFF) * (1 - fade) + ((pixelRight >> 8) & 0xFF) * fade);
-			byte b = (byte) ((pixelLeft & 0xFF) * (1 - fade) + (pixelRight & 0xFF) * fade);
-
-// System.out.println(pixelLocation + "\t" + hex(pixel));
-			packetData[ledAddress] = (byte) r;
-			packetData[ledAddress + 1] = (byte) g;
-			packetData[ledAddress + 2] = (byte) b;
-			ledAddress += 3;
-
-			if (enableShowLocations) {
-				p.pixels[pixelLocation] = 0xFFFFFF ^ pixelLeft;
-				p.pixels[pixelLocation + rightOffset] = 0xFFFFFF ^ pixelRight;
-			}
-		}
-
-		writePixels();
-
-		if (enableShowLocations) {
-			p.updatePixels();
-		}
-	}
-
 	// Change the number of pixels in our output packet.
 	// This is normally not needed; the output packet is automatically sized
 	// by draw() and by setPixel().
@@ -308,6 +178,12 @@ public class OPC implements Runnable {
 		packetData[offset] = (byte) (c >> 16);
 		packetData[offset + 1] = (byte) (c >> 8);
 		packetData[offset + 2] = (byte) c;
+	}
+
+	public void setPixel(int offset, byte r, byte g, byte b) {
+		packetData[offset] = (byte) r;
+		packetData[offset + 1] = (byte) g;
+		packetData[offset + 2] = (byte) b;
 	}
 
 	// Read a pixel from the output buffer. If the pixel was mapped to the display,

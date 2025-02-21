@@ -56,6 +56,7 @@ public abstract class Palette extends JComponent {
 			return new Color(image.getRGB(x, 1));
 		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
 			System.out.println("Palette color requested is out-of-bounds: " + x);
+			new Exception().printStackTrace();
 			return Color.black;
 		}
 	}

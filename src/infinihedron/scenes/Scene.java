@@ -9,17 +9,15 @@ import infinihedron.Infinihedron;
 import infinihedron.control.BeatListener;
 import infinihedron.control.BeatMultiplier;
 import infinihedron.control.BeatRunner;
-import infinihedron.control.SceneType;
 import infinihedron.palettes.Palette;
 import infinihedron.palettes.PaletteManager;
 import infinihedron.palettes.PaletteType;
 import infinihedron.pixelControl.models.Point;
+import infinihedron.projections.Projection;
 
 public abstract class Scene implements BeatListener {
 	private final PaletteManager paletteManager = PaletteManager.getInstance();
 	
-	public final SceneType type;
-
 	protected final Infinihedron p;
 	protected Palette palette = paletteManager.get(PaletteType.Blank);
 
@@ -33,10 +31,11 @@ public abstract class Scene implements BeatListener {
 	protected final Point size;
 
 	protected final BeatMultiplier beatMultiplier;
+
+	protected final Projection projection;
 	
-	Scene(Infinihedron infinihedron, SceneType type) {
+	Scene(Infinihedron infinihedron, Projection projection) {
 		this.p = infinihedron;
-		this.type = type;
 		this.random = new Random();
 		
 		this.size = new Point(infinihedron.width / 2, infinihedron.height);
@@ -45,6 +44,8 @@ public abstract class Scene implements BeatListener {
 
 		this.lastBeat = System.currentTimeMillis();
 		beatMultiplier = new BeatMultiplier(i -> subBeat(i));
+
+		this.projection = projection;
 	}
 	
 	public abstract void draw();
@@ -77,7 +78,8 @@ public abstract class Scene implements BeatListener {
 	}
 
 	protected float getBeatFraction() {
-		return (float)(System.currentTimeMillis() - lastBeat) / beatInterval;
+		float fraction = (float)(System.currentTimeMillis() - lastBeat) / beatInterval;
+		return fraction > 1 ? 1 : fraction;
 	}
 
 	protected void setBeatMultiplier(int multiplier) {

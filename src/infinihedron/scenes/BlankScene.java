@@ -4,12 +4,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import infinihedron.Infinihedron;
-import infinihedron.control.SceneType;
+import infinihedron.projections.Projection;
 
 public class BlankScene extends Scene {
 
-	public BlankScene(Infinihedron infinihedron) {
-		super(infinihedron, SceneType.Blank);
+	public BlankScene(Infinihedron infinihedron, Projection projection) {
+		super(infinihedron, projection);
 	}
 	
 	@Override

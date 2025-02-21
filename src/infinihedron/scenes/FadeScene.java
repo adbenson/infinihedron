@@ -5,13 +5,13 @@ import java.awt.Color;
 import javax.swing.JPanel;
 
 import infinihedron.Infinihedron;
-import infinihedron.control.SceneType;
+import infinihedron.projections.Projection;
 import infinihedron.ui.MultiplierSlider;
 
 public class FadeScene extends Scene {
 	
-	public FadeScene(Infinihedron infinihedron) {
-		super(infinihedron, SceneType.Fade);
+	public FadeScene(Infinihedron infinihedron, Projection projection) {
+		super(infinihedron, projection);
 	}
 
 	// private boolean state = true;

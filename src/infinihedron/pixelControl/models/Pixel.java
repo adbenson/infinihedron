@@ -1,10 +1,12 @@
 package infinihedron.pixelControl.models;
 
 public class Pixel extends Point {
-	public final int index;
+	public final int outputIndex;
+	public final int positionIndex;
 
-	public Pixel(Point p, int i) {
+	public Pixel(Point p, int oi, int pi) {
 		super(p.x, p.y, p.z);
-		this.index = i;
+		this.outputIndex = oi;
+		this.positionIndex = pi;
 	}
 }

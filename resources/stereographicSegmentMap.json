@@ -2,8 +2,8 @@
 	{
 		"start": "A0",
 		"end": "A2",
-		"channel": "0",
-		"segment": "0"
+		"channel": 0,
+		"segment": 0
 	},
 	{
 		"start": "A2",

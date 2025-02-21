@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import infinihedron.Infinihedron;
-import infinihedron.control.SceneType;
 import infinihedron.pixelControl.models.Layer;
 import infinihedron.pixelControl.models.Point;
 import infinihedron.pixelControl.models.Segment;
@@ -23,10 +22,10 @@ public class FirefliesScene extends Scene {
 
 	private final SpriteManager<Firefly> fireflies;
 
-	public FirefliesScene(Infinihedron infinihedron) {
-		super(infinihedron, SceneType.Fireflies);
+	public FirefliesScene(Infinihedron infinihedron, Projection projection) {
+		super(infinihedron, projection);
 		
-		List<SegmentLine> segments = infinihedron.getProjection().getSegments();
+		List<SegmentLine> segments = projection.getSegments();
 
 		this.adjacencies = buildAdjacencyMap(segments);
 
@@ -78,11 +77,6 @@ public class FirefliesScene extends Scene {
 			pushToArray(adjacencies.get(end), start);
 		}
 
-		for (Vertex vertex : adjacencies.keySet()) {
-			Vertex[] adjacent = adjacencies.get(vertex);
-			System.out.println("Vertex: " + vertex + " -> " + adjacent[0] + ", " + adjacent[1] + ", " + adjacent[2]);
-		}
-
 		return adjacencies;
 	}
 
@@ -122,7 +116,6 @@ public class FirefliesScene extends Scene {
 		}
 
 		private synchronized void updateVertices(Vertex start, Vertex end) {
-System.out.println("updateVertices: " + start + " -> " + end);
 			this.start = start;
 			this.end = end;
 			this.startPoint = vertexToPoint.get(start);
@@ -139,7 +132,7 @@ System.out.println("updateVertices: " + start + " -> " + end);
 		@Override
 		public void draw() {
 			float f = getBeatFraction();
-			Point point = Projection.pointOnLine(startPoint, endPoint, getBeatFraction());
+			Point point = projection.pointOnLine(startPoint, endPoint, getBeatFraction());
 			int baseSize = (start.layer == Layer.D && end.layer == Layer.D) ? 150 : 100;
 			int radius = Math.max((int)((1 - (Math.abs(f * 2 - 1))) * baseSize), 25);
 			gradientCircle((int)point.x, (int)point.y, c, radius, 1);
@@ -147,7 +140,7 @@ System.out.println("updateVertices: " + start + " -> " + end);
 
 		@Override
 		public void beat() {
-			System.out.println("before: " + startPoint + " -> " + endPoint);
+			// System.out.println("before: " + startPoint + " -> " + endPoint);
 			Vertex newEnd = chooseOther(end, start);
 
 			if (newEnd.equals(start)) {
@@ -159,7 +152,7 @@ System.out.println("updateVertices: " + start + " -> " + end);
 			// if (!oldEndPoint.equals(startPoint)) {
 			// 	System.out.println("teleported!");
 			// }
-			System.out.println("after: " + startPoint + " -> " + endPoint);
+			// System.out.println("after: " + startPoint + " -> " + endPoint);
 		}
 
 		private void gradientCircle(int x, int y, Color c, int radius, float maxAlpha) {

@@ -5,7 +5,7 @@ import java.awt.Color;
 import javax.swing.JPanel;
 
 import infinihedron.Infinihedron;
-import infinihedron.control.SceneType;
+import infinihedron.projections.Projection;
 import infinihedron.ui.MultiplierSlider;
 
 public class FireworksScene extends Scene {
@@ -19,8 +19,8 @@ public class FireworksScene extends Scene {
 	private final int minBirthInterval = 0;
 	private final int maxBirthInterval = 1;
 
-	public FireworksScene(Infinihedron infinihedron) {
-		super(infinihedron, SceneType.Fireworks);
+	public FireworksScene(Infinihedron infinihedron, Projection projection) {
+		super(infinihedron, projection);
 
 		sprites = new SpriteManager<Firework>(
 			birthAge, birthAge, minBirthInterval, maxBirthInterval,
